@@ -24,12 +24,17 @@
 <script>
 import ResizeObserver from './ResizeObserver'
 import { autoDetectRenderer, Container } from 'pixi.js'
+import Ticker from '../Ticker'
 
 export default {
     name: 'Game',
 
     components: {
         ResizeObserver
+    },
+
+    created () {
+        this.ticker = new Ticker(30)
     },
 
     mounted () {
@@ -48,6 +53,13 @@ export default {
 
         this.layers = new Container()
         this.renderer.render(this.layers)
+
+        this.ticker.on('render', this.renderer.render)
+    },
+
+    beforeDestroy () {
+        this.ticker.off('render', this.renderer.render)
+        this.renderer.destroy()
     },
 
     methods: {
