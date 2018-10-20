@@ -1,4 +1,3 @@
-
 import EventEmitter from 'events'
 
 export default class Ticker extends EventEmitter {
