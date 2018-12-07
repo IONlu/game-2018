@@ -5,27 +5,31 @@ const isVector = vector => {
 }
 
 export default class Vector {
-    constructor (x = 0, y = 0) {
-        this.x = x
-        this.y = y
+    constructor (...args) {
+        this.set(...args)
     }
 
     clone () {
-        return new Vector(this.x, this.y)
+        return new Vector(this)
     }
 
     copy (vector) {
-        this.x = vector.x
-        this.y = vector.y
+        return this.set(vector)
     }
 
     equals (vector) {
         return this.x === vector.x && this.y === vector.y
     }
 
-    set (x, y) {
-        this.x = x
-        this.y = y
+    set (xOrVector = 0, y = 0) {
+        if (isVector(xOrVector)) {
+            this.x = xOrVector.x
+            this.y = xOrVector.y
+        } else {
+            this.x = xOrVector
+            this.y = y
+        }
+        return this
     }
 
     angle () {
