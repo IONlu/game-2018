@@ -25,11 +25,16 @@
 <script>
 import AStar from '../AStar'
 import ResizeObserver from './ResizeObserver'
-import { autoDetectRenderer, Container, loaders, Sprite, Graphics } from 'pixi.js'
+import { autoDetectRenderer, Container, loaders, Sprite, Graphics, particles } from 'pixi.js'
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
 import BugSvg from '../assets/bug1.svg'
 import Vector from '../Vector'
+
+// https://en.wikipedia.org/wiki/Linear_interpolation
+const lerp = (v1, v2, dt) => {
+    return (1 - dt) * v1 + dt * v2
+}
 
 export default {
     name: 'Game',
@@ -139,7 +144,7 @@ export default {
     },
 
     created () {
-        this.ticker = new Ticker(30)
+        this.ticker = new Ticker(10)
 
         // init asset loader
         this.loader = new loaders.Loader()
@@ -237,27 +242,34 @@ export default {
             )
         },
 
-        render () {
+        render (dt) {
+            this.bugs.forEach(bug => {
+                bug.sprite.position.x = lerp(bug.position.x, bug.position.x + bug.velocity.x, dt)
+                bug.sprite.position.y = lerp(bug.position.y, bug.position.y + bug.velocity.y, dt)
+                bug.sprite.rotation = bug.velocity.angle()
+            })
             this.renderer.render(this.stage)
         },
 
         update () {
             this.bugs.forEach(bug => {
+                bug.position.add(bug.velocity)
+
                 let x = Math.floor(bug.position.x / (this.tileSize / this.divide))
                 let y = Math.floor(bug.position.y / (this.tileSize / this.divide))
 
-                if ((x / this.divide) === this.endPoint.x && (y / this.divide) === this.endPoint.y) {
+                if (
+                    Math.floor(x / this.divide) === this.endPoint.x &&
+                    Math.floor(y / this.divide) === this.endPoint.y
+                ) {
                     this.moveBugToStart(bug)
                     return
                 }
 
                 let flowFieldIndex = (y * this.map.width * this.divide) + x
                 let vec = this.flowField[flowFieldIndex] || new Vector()
-                bug.rotation = vec.angle()
 
-                let movingVec = vec.clone().multiply(10)
-                bug.position.x += movingVec.x
-                bug.position.y += movingVec.y
+                bug.velocity.set(vec).multiply(10)
             })
         },
 
@@ -291,17 +303,23 @@ export default {
                 this.startPoint.x * this.tileSize + (Math.random() * this.tileSize),
                 this.startPoint.y * this.tileSize + (Math.random() * this.tileSize)
             )
+            bug.velocity.set(0, 0)
         },
 
         spawnBug () {
-            let bug = new Sprite(this.resources.bug.texture)
-            bug.scale.set(0.2)
-            bug.anchor.set(0.5)
+            let sprite = new Sprite(this.resources.bug.texture)
+            sprite.scale.set(0.2)
+            sprite.anchor.set(0.5)
+            this.viewport.addChild(sprite)
+
+            let bug = {
+                sprite,
+                position: new Vector(),
+                velocity: new Vector()
+            }
+            this.bugs.push(bug)
 
             this.moveBugToStart(bug)
-
-            this.bugs.push(bug)
-            this.viewport.addChild(bug)
         }
     }
 }
