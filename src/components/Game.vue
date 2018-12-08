@@ -293,14 +293,12 @@ export default {
         onLoad (loader, resources) {
             this.resources = resources
 
-            for (let i = 0; i < 100; i++) {
-                this.spawnBug()
-            }
+            this.startWave()
         },
 
         moveBugToStart (bug) {
             bug.position.set(
-                this.startPoint.x * this.tileSize + (Math.random() * this.tileSize),
+                this.startPoint.x * this.tileSize + (this.tileSize / 2),
                 this.startPoint.y * this.tileSize + (Math.random() * this.tileSize)
             )
             bug.velocity.set(0, 0)
@@ -320,6 +318,20 @@ export default {
             this.bugs.push(bug)
 
             this.moveBugToStart(bug)
+        },
+
+        startWave () {
+            let count = 100
+            let _spawn = () => {
+                if (count > 0) {
+                    count--
+                    this.spawnBug()
+                    setTimeout(() => {
+                        _spawn()
+                    }, 1000)
+                }
+            }
+            _spawn()
         }
     }
 }
