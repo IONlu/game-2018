@@ -25,7 +25,7 @@
 <script>
 import AStar from '../AStar'
 import ResizeObserver from './ResizeObserver'
-import { autoDetectRenderer, Container, loaders, Sprite, Graphics, particles } from 'pixi.js'
+import { autoDetectRenderer, Container, loaders, Sprite, Graphics } from 'pixi.js'
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
 import BugSvg from '../assets/bug1.svg'
@@ -108,9 +108,7 @@ export default {
 
         heatMap () {
             let heatMap = new Array(this.map.width * this.map.height * this.divide * this.divide).fill(Infinity)
-            AStar(this.endPoint, (x, y) => {
-                return x < 0 || y < 0 || x >= this.map.width || y >= this.map.height || this.walls.has(`${x}:${y}`)
-            }, this.divide).forEach(({ x, y, weight }) => {
+            AStar(this.endPoint, this.isBlocked, this.divide).forEach(({ x, y, weight }) => {
                 heatMap[(y * this.map.width * this.divide) + x] = weight
             })
             return heatMap
@@ -124,27 +122,31 @@ export default {
                 let width = this.map.width * this.divide
                 let x1 = Number.isInteger(this.heatMap[index - 1]) && (index % width > 1)
                     ? this.heatMap[index - 1]
-                    : weight + 0.2
+                    : weight
                 let x2 = Number.isInteger(this.heatMap[index + 1]) && (index % width < width - 1)
                     ? this.heatMap[index + 1]
-                    : weight + 0.2
+                    : weight
                 let y1 = Number.isInteger(this.heatMap[index - (width * this.divide)])
                     ? this.heatMap[index - (width * this.divide)]
-                    : weight + 0.2
+                    : weight
                 let y2 = Number.isInteger(this.heatMap[index + (width * this.divide)])
                     ? this.heatMap[index + (width * this.divide)]
-                    : weight + 0.2
+                    : weight
 
                 return (new Vector(
                     x1 - x2,
                     y1 - y2
                 )).normalize()
             })
+        },
+
+        pixel2TileRatio () {
+            return this.divide / this.tileSize
         }
     },
 
     created () {
-        this.ticker = new Ticker(10)
+        this.ticker = new Ticker(30)
 
         // init asset loader
         this.loader = new loaders.Loader()
@@ -255,9 +257,8 @@ export default {
             this.bugs.forEach(bug => {
                 bug.position.add(bug.velocity)
 
-                let x = Math.floor(bug.position.x / (this.tileSize / this.divide))
-                let y = Math.floor(bug.position.y / (this.tileSize / this.divide))
-
+                let flowFieldTile = this.getFlowFieldTile (bug.position)
+                let { x, y } = flowFieldTile
                 if (
                     Math.floor(x / this.divide) === this.endPoint.x &&
                     Math.floor(y / this.divide) === this.endPoint.y
@@ -266,10 +267,47 @@ export default {
                     return
                 }
 
+                // TODO: check collision
                 let flowFieldIndex = (y * this.map.width * this.divide) + x
-                let vec = this.flowField[flowFieldIndex] || new Vector()
+                if (!this.flowField[flowFieldIndex]) {
+                    // TODO: not yet working correctly
+                    // bug lost => move back to last known tile
+                    flowFieldTile = bug.flowFieldTile
+                    x = flowFieldTile.x
+                    y = flowFieldTile.y
+                    bug.position.set(
+                        (x + 0.5) * (this.tileSize / this.divide),
+                        (y + 0.5) * (this.tileSize / this.divide)
+                    )
+                } else {
+                    bug.flowFieldTile = flowFieldTile
+                }
 
-                bug.velocity.set(vec).multiply(10)
+                let targetVelocity = this.flowField[flowFieldIndex].clone().multiply(bug.speed)
+                let steeringForce = targetVelocity.clone()
+                    .rotate(Math.sin(bug.random + ((bug.position.x + bug.position.y) / (this.tileSize / 2))) / 5) // bug sinus moving
+                    .substract(bug.velocity)
+                if (steeringForce.length() > bug.rotationSpeed) {
+                    steeringForce.normalize().multiply(bug.rotationSpeed)
+                }
+
+                bug.velocity.add(steeringForce).normalize().multiply(bug.speed)
+
+                // check collision
+                let targetX = Math.floor((bug.position.x + bug.velocity.x) * this.pixel2TileRatio / this.divide)
+                let targetY = Math.floor((bug.position.y + bug.velocity.y) * this.pixel2TileRatio / this.divide)
+                if (this.isBlocked(targetX, targetY)) {
+                    let diffX = Math.abs((targetX * this.divide) - x)
+                    let diffY = Math.abs((targetY * this.divide) - y)
+                    if (diffX < diffY) {
+                        bug.velocity.set(bug.velocity.x, -bug.velocity.y)
+                    } else if (diffX < diffY) {
+                        bug.velocity.set(-bug.velocity.x, bug.velocity.y)
+                    } else {
+                        bug.velocity.negate()
+                    }
+                    bug.velocity.add(targetVelocity).normalize().multiply(bug.speed)
+                }
             })
         },
 
@@ -302,6 +340,14 @@ export default {
                 this.startPoint.y * this.tileSize + (Math.random() * this.tileSize)
             )
             bug.velocity.set(0, 0)
+            bug.flowFieldTile = this.getFlowFieldTile(bug.position)
+        },
+
+        getFlowFieldTile (position) {
+            return new Vector(
+                Math.floor(position.x * this.pixel2TileRatio),
+                Math.floor(position.y * this.pixel2TileRatio)
+            )
         },
 
         spawnBug () {
@@ -313,7 +359,11 @@ export default {
             let bug = {
                 sprite,
                 position: new Vector(),
-                velocity: new Vector()
+                velocity: new Vector(),
+                speed: 5 + Math.random(),
+                rotationSpeed: 0.5 + (Math.random() / 4),
+                tile: new Vector(),
+                random: Math.random() * 1000
             }
             this.bugs.push(bug)
 
@@ -321,7 +371,7 @@ export default {
         },
 
         startWave () {
-            let count = 100
+            let count = 50
             let _spawn = () => {
                 if (count > 0) {
                     count--
@@ -332,6 +382,10 @@ export default {
                 }
             }
             _spawn()
+        },
+
+        isBlocked (x, y) {
+            return x < 0 || y < 0 || x >= this.map.width || y >= this.map.height || this.walls.has(`${x}:${y}`)
         }
     }
 }

@@ -53,7 +53,7 @@ export default class Vector {
         return this
     }
 
-    subtract (vector) {
+    substract (vector) {
         if (isVector(vector)) {
             this.x -= vector.x
             this.y -= vector.y
@@ -118,5 +118,15 @@ export default class Vector {
 
     toArray (n) {
         return [this.x, this.y].slice(0, n || 2)
+    }
+
+    rotate (angle) {
+        let x = this.x
+        let y = this.y
+        let cosAngle = Math.cos(angle)
+        let sinAngle = Math.sin(angle)
+        this.x = (x * cosAngle) - (y * sinAngle)
+        this.y = (x * sinAngle) + (y * cosAngle)
+        return this
     }
 }
