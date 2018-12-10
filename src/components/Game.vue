@@ -257,7 +257,7 @@ export default {
             this.bugs.forEach(bug => {
                 bug.position.add(bug.velocity)
 
-                let flowFieldTile = this.getFlowFieldTile (bug.position)
+                let flowFieldTile = this.getFlowFieldTile(bug.position)
                 let { x, y } = flowFieldTile
                 if (
                     Math.floor(x / this.divide) === this.endPoint.x &&
@@ -279,6 +279,7 @@ export default {
                         (x + 0.5) * (this.tileSize / this.divide),
                         (y + 0.5) * (this.tileSize / this.divide)
                     )
+                    flowFieldIndex = (y * this.map.width * this.divide) + x
                 } else {
                     bug.flowFieldTile = flowFieldTile
                 }
