@@ -9,6 +9,10 @@
                 <fa-icon icon="heart" /> {{ health }}
             </div>
         </div>
+        <div
+            :class="$style.leftPanel"
+        >
+        </div>
         <resize-observer
             @resize="onResize"
         >
@@ -28,10 +32,11 @@
     }
 
     .rendererContainer {
-        width: 100%;
-        height: 100%;
+        width: 70vw;
+        height: 95vh;
         background: url(../assets/Background.svg) center center no-repeat fixed;
         background-size: cover;
+        display: inline-block;
     }
 
     .renderer {
@@ -40,14 +45,21 @@
     }
 
     .topBar {
-        position: absolute;
-        height: 50px;
-        line-height: 50px;
+        height: 5vh;
+        line-height: 5vh;
         width: 100%;
-        background: #FF000099;
+        background: #FF0000;
         color: #FFF;
-        font-size: 30px;
+        font-size: 3vh;
         text-align: right;
+    }
+
+    .leftPanel {
+        float: left;
+        width: 30vw;
+        height: 95vh;
+        background: #009900;
+        display: inline-block;
     }
 
     .topbarElement {
@@ -264,8 +276,8 @@ export default {
 
     mounted () {
         this.renderer = autoDetectRenderer(
-            this.$el.clientWidth,
-            this.$el.clientHeight,
+            this.$refs.rendererContainer.clientWidth,
+            this.$refs.rendererContainer.clientHeight,
             {
                 antialias: true,
                 resolution: 1,
@@ -277,8 +289,8 @@ export default {
 
         this.viewport.interaction = this.renderer.interaction
         this.viewport.resize(
-            this.$el.clientWidth,
-            this.$el.clientHeight,
+            this.$refs.rendererContainer.clientWidth,
+            this.$refs.rendererContainer.clientHeight,
             this.viewportSize.width,
             this.viewportSize.height
         )
