@@ -266,6 +266,7 @@ export default {
                     this.selectedTile.x * this.tileSize,
                     this.selectedTile.y * this.tileSize
                 )
+                this.showPanel = true
             } else {
                 this.uiContainer.removeChild(this.selectedTileOverlay)
             }
