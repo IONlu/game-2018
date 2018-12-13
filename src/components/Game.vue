@@ -133,8 +133,8 @@ import ResizeObserver from './ResizeObserver'
 import { autoDetectRenderer, Container, loaders, Sprite, Graphics } from 'pixi.js'
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
-import BugSvg from '../assets/bugs/bug1.svg'
 import Vector from '../Vector'
+import BugAssets from '../assets/bugs'
 
 // https://en.wikipedia.org/wiki/Linear_interpolation
 const lerp = (v1, v2, dt) => {
@@ -493,7 +493,9 @@ export default {
         },
 
         loadAssets () {
-            this.loader.add('bug', BugSvg)
+            for (let key in BugAssets) {
+                this.loader.add('bug:' + key, BugAssets[key])
+            }
             this.loader.load(this.onLoad)
         },
 
@@ -536,8 +538,8 @@ export default {
             )
         },
 
-        spawnBug () {
-            let sprite = new Sprite(this.resources.bug.texture)
+        spawnBug (texture) {
+            let sprite = new Sprite(texture)
             sprite.scale.set(0.2)
             sprite.anchor.set(0.5)
             this.bugContainer.addChild(sprite)
@@ -557,6 +559,11 @@ export default {
         },
 
         startWave () {
+            // random bug texture
+            let bugKeys = Object.keys(BugAssets)
+            let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
+            let bugTexture = this.resources['bug:' + randomBugKey].texture
+
             let count = 50
             this.lastBugSpawned = false
             this.wave++
@@ -564,7 +571,7 @@ export default {
             let _spawn = () => {
                 if (count > 0) {
                     count--
-                    this.spawnBug()
+                    this.spawnBug(bugTexture)
                     setTimeout(() => {
                         _spawn()
                     }, 1000)
