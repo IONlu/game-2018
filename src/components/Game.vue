@@ -4,6 +4,7 @@
     >
         <div
             :class="$style.container"
+            @click="onClick"
         />
     </resize-observer>
 </template>
@@ -62,10 +63,9 @@ export default {
                       'WWWWWWWWWF' +
                       'EFFFFFFFFF'
             },
-
             resources: {},
-
-            bugs: []
+            bugs: [],
+            selectedTile: null
         }
     },
 
@@ -162,6 +162,18 @@ export default {
             .decelerate()
         this.stage.addChild(this.viewport)
 
+        // create container for the map
+        this.mapContainer = new Container()
+        this.viewport.addChild(this.mapContainer)
+
+        // create container for the bugs
+        this.bugContainer = new Container()
+        this.viewport.addChild(this.bugContainer)
+
+        // create container for the ui elements
+        this.uiContainer = new Container()
+        this.viewport.addChild(this.uiContainer)
+
         this.loadAssets()
 
         this.ticker.start()
@@ -170,7 +182,7 @@ export default {
         let mapBorders = new Graphics()
         mapBorders.lineStyle(1, 0xFF0000)
         mapBorders.drawRect(0, 0, this.mapSize.width, this.mapSize.height)
-        this.viewport.addChild(mapBorders)
+        this.mapContainer.addChild(mapBorders)
 
         // draw tiles
         mapBorders.lineStyle(0)
@@ -192,9 +204,14 @@ export default {
             tile.beginFill(color, 0.5)
             tile.drawRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize)
             tile.endFill()
-            this.viewport.addChild(tile)
+            this.mapContainer.addChild(tile)
             return tile
         })
+
+        // create selected tile overlay
+        this.selectedTileOverlay = new Graphics()
+        this.selectedTileOverlay.lineStyle(10, 0x3333FF, 0.5)
+        this.selectedTileOverlay.drawRect(0, 0, this.tileSize, this.tileSize)
     },
 
     mounted () {
@@ -355,7 +372,7 @@ export default {
             let sprite = new Sprite(this.resources.bug.texture)
             sprite.scale.set(0.2)
             sprite.anchor.set(0.5)
-            this.viewport.addChild(sprite)
+            this.bugContainer.addChild(sprite)
 
             let bug = {
                 sprite,
@@ -387,6 +404,27 @@ export default {
 
         isBlocked (x, y) {
             return x < 0 || y < 0 || x >= this.map.width || y >= this.map.height || this.walls.has(`${x}:${y}`)
+        },
+
+        onClick (evt) {
+            let worldCoords = this.viewport.toWorld(evt.clientX, evt.clientY)
+            this.selectTile(new Vector(
+                Math.floor(worldCoords.x / this.tileSize),
+                Math.floor(worldCoords.y / this.tileSize)
+            ))
+        },
+
+        selectTile (vec) {
+            this.selectedTile = vec || null
+            if (this.selectedTile) {
+                this.uiContainer.addChild(this.selectedTileOverlay)
+                this.selectedTileOverlay.position.set(
+                    this.selectedTile.x * this.tileSize,
+                    this.selectedTile.y * this.tileSize
+                )
+            } else {
+                this.uiContainer.removeChild(this.selectedTileOverlay)
+            }
         }
     }
 }
