@@ -21,7 +21,9 @@
                 >
                     <fa-icon :icon="togglePanelIcon" />
                 </div>
-                Left Panel
+                <div :class="$style.panelContent">
+                    Left Panel
+                </div>
             </div>
             <resize-observer
                 @resize="onRenderContainerResize"
@@ -72,6 +74,12 @@
         height: 95vh;
         background: #009900;
         display: inline-block;
+    }
+
+    .panelContent {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
     }
 
     .panel.showPanel {
