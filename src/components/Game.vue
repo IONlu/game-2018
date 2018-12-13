@@ -338,21 +338,12 @@ export default {
 
         this.ticker.start()
 
-        // draw map borders
-        let mapBorders = new Graphics()
-        mapBorders.lineStyle(1, 0xFF0000)
-        mapBorders.drawRect(0, 0, this.mapSize.width, this.mapSize.height)
-        this.mapContainer.addChild(mapBorders)
-
         // draw tiles
-        mapBorders.lineStyle(0)
         let tileGraphics = [ ...this.map.data ].map((type, index) => {
-            let { x, y } = this.index2Point(index)
-            let tile = new Graphics()
-            let color = 0x000000
+            let color
             switch (type) {
-                case 'W':
-                    color = 0xFFFFFF
+                case 'F':
+                    color = 0x999999
                     break
                 case 'S':
                     color = 0x00FF00
@@ -360,7 +351,11 @@ export default {
                 case 'E':
                     color = 0xFF0000
                     break
+                default:
+                    return
             }
+            let { x, y } = this.index2Point(index)
+            let tile = new Graphics()
             tile.beginFill(color, 0.5)
             tile.drawRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize)
             tile.endFill()
