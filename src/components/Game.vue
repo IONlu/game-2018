@@ -29,7 +29,6 @@
                 <div
                     ref="renderContainer"
                     :class="$style.renderContainer"
-                    @click="onClick"
                 />
             </resize-observer>
         </div>
@@ -292,6 +291,7 @@ export default {
             .pinch()
             .wheel()
             .decelerate()
+        this.viewport.on('clicked', this.onClick)
         this.stage.addChild(this.viewport)
 
         // create container for the map
@@ -544,13 +544,9 @@ export default {
         },
 
         onClick (evt) {
-            let worldCoords = this.viewport.toWorld(
-                evt.clientX - evt.target.offsetLeft,
-                evt.clientY - evt.target.offsetTop
-            )
             this.selectedTile = {
-                x: Math.floor(worldCoords.x / this.tileSize),
-                y: Math.floor(worldCoords.y / this.tileSize)
+                x: Math.floor(evt.world.x / this.tileSize),
+                y: Math.floor(evt.world.y / this.tileSize)
             }
         },
 
