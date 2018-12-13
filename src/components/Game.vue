@@ -8,6 +8,19 @@
             <div
                 :class="$style.topBar"
             >
+                <div
+                    v-if="lastBugSpawned"
+                    :class="$style.topbarElement"
+                    @click="startWave"
+                >
+                    <fa-icon icon="play" /> Next Wave
+                </div>
+                <div :class="$style.topbarElement">
+                    <fa-icon icon="water" /> {{ wave }}
+                </div>
+                <div :class="$style.topbarElement">
+                    <fa-icon icon="bug" /> {{ bugsLeft }}
+                </div>
                 <div :class="$style.topbarElement">
                     <fa-icon icon="heart" /> {{ health }}
                 </div>
@@ -158,11 +171,14 @@ export default {
             bugs: [],
             selectedTile: null,
             health: 100,
+            bugsLeft: 0,
+            wave: 0,
             screen: {
                 width: window.clientWidth,
                 height: window.clientHeight
             },
-            showPanel: true
+            showPanel: true,
+            lastBugSpawned: true
         }
     },
 
@@ -387,6 +403,11 @@ export default {
         this.ticker.removeListener('render', this.renderer.render)
 
         // cleanup pixi
+        this.stage.destroy({
+            children: true,
+            texture: true,
+            baseTexture: true
+        })
         this.stage.removeChildren()
         this.renderer.destroy()
         for (let key in this.resources) {
@@ -536,6 +557,9 @@ export default {
 
         startWave () {
             let count = 50
+            this.lastBugSpawned = false
+            this.wave++
+            this.bugsLeft += count
             let _spawn = () => {
                 if (count > 0) {
                     count--
@@ -543,6 +567,8 @@ export default {
                     setTimeout(() => {
                         _spawn()
                     }, 1000)
+                } else {
+                    this.lastBugSpawned = true
                 }
             }
             _spawn()
@@ -561,7 +587,19 @@ export default {
 
         handleBugReachesEnd (bug) {
             this.health--
-            this.moveBugToStart(bug)
+            this.bugsLeft--
+
+            this.removeBug(bug)
+        },
+
+        removeBug (bug) {
+            let index = this.bugs.indexOf(bug)
+            if (index > -1) {
+                this.bugs.splice(index, 1)
+            }
+            bug.sprite.destroy({
+                children: true
+            })
         },
 
         togglePanel () {

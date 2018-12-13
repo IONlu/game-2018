@@ -20,12 +20,15 @@ import Game from './components/Game.vue'
 import AStar from './components/test/AStar.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHeart, faAngleDoubleRight, faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faAngleDoubleRight, faAngleDoubleLeft, faWater, faBug, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faHeart)
 library.add(faAngleDoubleRight)
 library.add(faAngleDoubleLeft)
+library.add(faWater)
+library.add(faBug)
+library.add(faPlay)
 Vue.component('fa-icon', FontAwesomeIcon)
 
 export default {
