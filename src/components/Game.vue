@@ -1,29 +1,39 @@
 <template>
-    <div
-        :class="$style.game"
+    <resize-observer
+        @resize="onResize"
     >
         <div
-            :class="$style.topBar"
-        >
-            <div :class="$style.topbarElement">
-                <fa-icon icon="heart" /> {{ health }}
-            </div>
-        </div>
-        <div
-            :class="$style.leftPanel"
-        >
-            Left Panel
-        </div>
-        <resize-observer
-            @resize="onResize"
+            :class="mainClasses"
         >
             <div
-                ref="rendererContainer"
-                :class="$style.rendererContainer"
-                @click="onClick"
-            />
-        </resize-observer>
-    </div>
+                :class="$style.topBar"
+            >
+                <div :class="$style.topbarElement">
+                    <fa-icon icon="heart" /> {{ health }}
+                </div>
+            </div>
+            <div
+                :class="panelClasses"
+            >
+                <div
+                    :class="$style.panelToggle"
+                    @click="togglePanel"
+                >
+                    <fa-icon :icon="togglePanelIcon" />
+                </div>
+                Left Panel
+            </div>
+            <resize-observer
+                @resize="onRenderContainerResize"
+            >
+                <div
+                    ref="renderContainer"
+                    :class="$style.renderContainer"
+                    @click="onClick"
+                />
+            </resize-observer>
+        </div>
+    </resize-observer>
 </template>
 
 <style module>
@@ -33,7 +43,7 @@
         font-family: Arial, sans-serif;
     }
 
-    .rendererContainer {
+    .renderContainer {
         width: calc(100vw - 300px);
         height: 95vh;
         background: url(../assets/Background.svg) center center no-repeat fixed;
@@ -56,13 +66,30 @@
         text-align: right;
     }
 
-    .leftPanel {
+    .panel {
         float: left;
         max-width: 100%;
-        width: 300px;
+        width: 0;
         height: 95vh;
         background: #009900;
         display: inline-block;
+    }
+
+    .panel.showPanel {
+        width: 300px;
+    }
+
+    .panelToggle {
+        position: absolute;
+        left: 100%;
+        top: calc(50% - 20px);
+        height: 40px;
+        width: 40px;
+        background: #009900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
     }
 
     .topbarElement {
@@ -70,15 +97,12 @@
         margin: 0 30px;
     }
 
-    @media screen and (max-width: 800px) {
-        .rendererContainer {
-            width: 100vw;
-        }
+    .game.mobile .renderContainer {
+        width: 100vw;
+    }
 
-        .leftPanel {
-            position: absolute;
-            background: #00990077;
-        }
+    .game.mobile .panel {
+        position: absolute;
     }
 </style>
 
@@ -125,11 +149,34 @@ export default {
             resources: {},
             bugs: [],
             selectedTile: null,
-            health: 100
+            health: 100,
+            screen: {
+                width: window.clientWidth,
+                height: window.clientHeight
+            },
+            showPanel: true
         }
     },
 
     computed: {
+        isMobile () {
+            return this.screen.width < 1000
+        },
+
+        mainClasses () {
+            return {
+                [this.$style.game]: true,
+                [this.$style.mobile]: this.isMobile
+            }
+        },
+
+        panelClasses () {
+            return {
+                [this.$style.panel]: true,
+                [this.$style.showPanel]: this.showPanel
+            }
+        },
+
         mapSize () {
             return {
                 width: this.map.width * this.tileSize,
@@ -202,6 +249,12 @@ export default {
 
         pixel2TileRatio () {
             return this.divide / this.tileSize
+        },
+
+        togglePanelIcon () {
+            return this.showPanel
+                ? 'angle-double-left'
+                : 'angle-double-right'
         }
     },
 
@@ -216,6 +269,10 @@ export default {
             } else {
                 this.uiContainer.removeChild(this.selectedTileOverlay)
             }
+        },
+
+        isMobile () {
+            this.showPanel = !this.isMobile
         }
     },
 
@@ -290,8 +347,8 @@ export default {
 
     mounted () {
         this.renderer = autoDetectRenderer(
-            this.$refs.rendererContainer.clientWidth,
-            this.$refs.rendererContainer.clientHeight,
+            this.$refs.renderContainer.clientWidth,
+            this.$refs.renderContainer.clientHeight,
             {
                 antialias: true,
                 resolution: 1,
@@ -299,12 +356,12 @@ export default {
             }
         )
         this.renderer.view.classList.add(this.$style.renderer)
-        this.$refs.rendererContainer.appendChild(this.renderer.view)
+        this.$refs.renderContainer.appendChild(this.renderer.view)
 
         this.viewport.interaction = this.renderer.interaction
         this.viewport.resize(
-            this.$refs.rendererContainer.clientWidth,
-            this.$refs.rendererContainer.clientHeight,
+            this.$refs.renderContainer.clientWidth,
+            this.$refs.renderContainer.clientHeight,
             this.viewportSize.width,
             this.viewportSize.height
         )
@@ -408,7 +465,7 @@ export default {
             this.loader.load(this.onLoad)
         },
 
-        onResize ({ height, width }) {
+        onRenderContainerResize ({ height, width }) {
             if (this.renderer) {
                 this.renderer.resize(width, height)
             }
@@ -418,6 +475,11 @@ export default {
                 this.viewportSize.width,
                 this.viewportSize.height
             )
+        },
+
+        onResize ({ height, width }) {
+            this.screen.width = width
+            this.screen.height = height
         },
 
         onLoad (loader, resources) {
@@ -494,6 +556,12 @@ export default {
         handleBugReachesEnd (bug) {
             this.health--
             this.moveBugToStart(bug)
+        },
+
+        togglePanel () {
+            if (this.isMobile) {
+                this.showPanel = !this.showPanel
+            }
         }
     }
 }
