@@ -12,6 +12,7 @@
         <div
             :class="$style.leftPanel"
         >
+            Left Panel
         </div>
         <resize-observer
             @resize="onResize"
@@ -29,6 +30,7 @@
     .game {
         width: 100vw;
         height: 100vh;
+        font-family: Arial, sans-serif;
     }
 
     .rendererContainer {
