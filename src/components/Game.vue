@@ -74,8 +74,11 @@
         height: 5vh;
         line-height: 5vh;
         width: 100%;
-        background: #FF0000;
+        background: #000000;
         color: #FFF;
+        border-style: solid;
+        border-color: #999;
+        border-width: 0 0 1px 0;
         font-size: 3vh;
         text-align: right;
     }
