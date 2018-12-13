@@ -422,10 +422,10 @@ export default {
 
         onClick (evt) {
             let worldCoords = this.viewport.toWorld(evt.clientX, evt.clientY)
-            this.selectedTile = new Vector(
-                Math.floor(worldCoords.x / this.tileSize),
-                Math.floor(worldCoords.y / this.tileSize)
-            )
+            this.selectedTile = {
+                x: Math.floor(worldCoords.x / this.tileSize),
+                y: Math.floor(worldCoords.y / this.tileSize)
+            }
         }
     }
 }
