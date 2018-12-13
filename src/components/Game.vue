@@ -1,18 +1,35 @@
 <template>
-    <resize-observer
-        @resize="onResize"
+    <div
+        :class="$style.game"
     >
         <div
-            :class="$style.container"
-            @click="onClick"
-        />
-    </resize-observer>
+            :class="$style.topBar"
+        >
+            <div :class="$style.topbarElement">
+                <fa-icon icon="heart" /> {{ health }}
+            </div>
+        </div>
+        <resize-observer
+            @resize="onResize"
+        >
+            <div
+                ref="rendererContainer"
+                :class="$style.rendererContainer"
+                @click="onClick"
+            />
+        </resize-observer>
+    </div>
 </template>
 
 <style module>
-    .container {
+    .game {
         width: 100vw;
         height: 100vh;
+    }
+
+    .rendererContainer {
+        width: 100%;
+        height: 100%;
         background: url(../assets/Background.svg) center center no-repeat fixed;
         background-size: cover;
     }
@@ -20,6 +37,22 @@
     .renderer {
         width: 100%;
         height: 100%;
+    }
+
+    .topBar {
+        position: absolute;
+        height: 50px;
+        line-height: 50px;
+        width: 100%;
+        background: #FF000099;
+        color: #FFF;
+        font-size: 30px;
+        text-align: right;
+    }
+
+    .topbarElement {
+        display: inline-block;
+        margin: 0 30px;
     }
 </style>
 
@@ -65,7 +98,8 @@ export default {
             },
             resources: {},
             bugs: [],
-            selectedTile: null
+            selectedTile: null,
+            health: 100
         }
     },
 
@@ -239,7 +273,7 @@ export default {
             }
         )
         this.renderer.view.classList.add(this.$style.renderer)
-        this.$el.appendChild(this.renderer.view)
+        this.$refs.rendererContainer.appendChild(this.renderer.view)
 
         this.viewport.interaction = this.renderer.interaction
         this.viewport.resize(
@@ -294,7 +328,7 @@ export default {
                     Math.floor(x / this.divide) === this.endPoint.x &&
                     Math.floor(y / this.divide) === this.endPoint.y
                 ) {
-                    this.moveBugToStart(bug)
+                    this.handleBugReachesEnd(bug)
                     return
                 }
 
@@ -426,6 +460,11 @@ export default {
                 x: Math.floor(worldCoords.x / this.tileSize),
                 y: Math.floor(worldCoords.y / this.tileSize)
             }
+        },
+
+        handleBugReachesEnd (bug) {
+            this.health--
+            this.moveBugToStart(bug)
         }
     }
 }

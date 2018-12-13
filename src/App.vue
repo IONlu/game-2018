@@ -15,8 +15,16 @@ body {
 </style>
 
 <script>
+import Vue from 'vue'
 import Game from './components/Game.vue'
 import AStar from './components/test/AStar.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faHeart)
+Vue.component('fa-icon', FontAwesomeIcon)
 
 export default {
     name: 'App',
