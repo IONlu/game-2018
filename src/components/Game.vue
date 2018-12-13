@@ -44,7 +44,7 @@
     }
 
     .renderContainer {
-        width: calc(100vw - 300px);
+        width: calc(70vw);
         height: 95vh;
         background: url(../assets/Background.svg) center center no-repeat fixed;
         background-size: cover;
@@ -76,7 +76,8 @@
     }
 
     .panel.showPanel {
-        width: 300px;
+        min-width: 300px;
+        width: 30%;
     }
 
     .panelToggle {
