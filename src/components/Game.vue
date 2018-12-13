@@ -11,7 +11,7 @@
                 <div
                     v-if="lastBugSpawned"
                     :class="$style.topbarElement"
-                    @click="startWave"
+                    @click="nextWave"
                 >
                     <fa-icon icon="play" /> Next Wave
                 </div>
@@ -519,7 +519,7 @@ export default {
         onLoad (loader, resources) {
             this.resources = resources
 
-            this.startWave()
+            this.nextWave()
         },
 
         moveBugToStart (bug) {
@@ -558,7 +558,7 @@ export default {
             this.moveBugToStart(bug)
         },
 
-        startWave () {
+        nextWave () {
             // random bug texture
             let bugKeys = Object.keys(BugAssets)
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
