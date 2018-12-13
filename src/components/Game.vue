@@ -79,8 +79,8 @@ export default {
 
         viewportSize () {
             return {
-                width: this.mapSize.width,
-                height: this.mapSize.height
+                width: this.mapSize.width + (2 * this.tileSize),
+                height: this.mapSize.height + (2 * this.tileSize)
             }
         },
 
@@ -218,7 +218,7 @@ export default {
             this.viewportSize.height
         )
         this.viewport.fitWorld()
-        this.viewport.moveCenter(this.viewportSize.width / 2, this.viewportSize.height / 2)
+        this.viewport.moveCenter((this.viewportSize.width / 2) - this.tileSize, (this.viewportSize.height / 2) - this.tileSize)
 
         this.render()
         this.ticker.on('render', this.render)
