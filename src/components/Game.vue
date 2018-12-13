@@ -133,7 +133,7 @@ import ResizeObserver from './ResizeObserver'
 import { autoDetectRenderer, Container, loaders, Sprite, Graphics } from 'pixi.js'
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
-import BugSvg from '../assets/bug1.svg'
+import BugSvg from '../assets/bugs/bug1.svg'
 import Vector from '../Vector'
 
 // https://en.wikipedia.org/wiki/Linear_interpolation
