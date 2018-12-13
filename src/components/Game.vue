@@ -145,6 +145,20 @@ export default {
         }
     },
 
+    watch: {
+        selectedTile () {
+            if (this.selectedTile) {
+                this.uiContainer.addChild(this.selectedTileOverlay)
+                this.selectedTileOverlay.position.set(
+                    this.selectedTile.x * this.tileSize,
+                    this.selectedTile.y * this.tileSize
+                )
+            } else {
+                this.uiContainer.removeChild(this.selectedTileOverlay)
+            }
+        }
+    },
+
     created () {
         this.ticker = new Ticker(30)
 
@@ -408,23 +422,10 @@ export default {
 
         onClick (evt) {
             let worldCoords = this.viewport.toWorld(evt.clientX, evt.clientY)
-            this.selectTile(new Vector(
+            this.selectedTile = new Vector(
                 Math.floor(worldCoords.x / this.tileSize),
                 Math.floor(worldCoords.y / this.tileSize)
-            ))
-        },
-
-        selectTile (vec) {
-            this.selectedTile = vec || null
-            if (this.selectedTile) {
-                this.uiContainer.addChild(this.selectedTileOverlay)
-                this.selectedTileOverlay.position.set(
-                    this.selectedTile.x * this.tileSize,
-                    this.selectedTile.y * this.tileSize
-                )
-            } else {
-                this.uiContainer.removeChild(this.selectedTileOverlay)
-            }
+            )
         }
     }
 }
