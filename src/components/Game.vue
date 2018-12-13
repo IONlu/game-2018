@@ -367,7 +367,8 @@ export default {
 
         // create selected tile overlay
         this.selectedTileOverlay = new Graphics()
-        this.selectedTileOverlay.lineStyle(10, 0x3333FF, 0.5)
+        this.selectedTileOverlay.lineStyle(5, 0x3333FF, 0.7, 1)
+        this.selectedTileOverlay.beginFill(0x3333FF, 0.5)
         this.selectedTileOverlay.drawRect(0, 0, this.tileSize, this.tileSize)
     },
 
