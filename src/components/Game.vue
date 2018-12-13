@@ -34,7 +34,7 @@
     }
 
     .rendererContainer {
-        width: 70vw;
+        width: calc(100vw - 300px);
         height: 95vh;
         background: url(../assets/Background.svg) center center no-repeat fixed;
         background-size: cover;
@@ -58,7 +58,8 @@
 
     .leftPanel {
         float: left;
-        width: 30vw;
+        max-width: 100%;
+        width: 300px;
         height: 95vh;
         background: #009900;
         display: inline-block;
@@ -67,6 +68,17 @@
     .topbarElement {
         display: inline-block;
         margin: 0 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        .rendererContainer {
+            width: 100vw;
+        }
+
+        .leftPanel {
+            position: absolute;
+            background: #00990077;
+        }
     }
 </style>
 
@@ -469,7 +481,10 @@ export default {
         },
 
         onClick (evt) {
-            let worldCoords = this.viewport.toWorld(evt.clientX, evt.clientY)
+            let worldCoords = this.viewport.toWorld(
+                evt.clientX - evt.target.offsetLeft,
+                evt.clientY - evt.target.offsetTop
+            )
             this.selectedTile = {
                 x: Math.floor(worldCoords.x / this.tileSize),
                 y: Math.floor(worldCoords.y / this.tileSize)
