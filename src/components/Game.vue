@@ -435,6 +435,18 @@ export default {
                 bug.sprite.position.y = lerp(bug.position.y, bug.position.y + bug.velocity.y, dt)
                 bug.sprite.rotation = bug.velocity.angle()
             })
+            this.towers.forEach(tower => {
+                tower.debugGraphics.clear()
+                tower.debugGraphics.lineStyle(5, 0x00FF00)
+                if (tower.bug) {
+                    tower.cannonSprite.rotation = new Vector(tower.bug.sprite.position.x, tower.bug.sprite.position.y)
+                        .substract(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
+                        .angle()
+
+                    tower.debugGraphics.moveTo(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
+                    tower.debugGraphics.lineTo(tower.bug.sprite.position.x, tower.bug.sprite.position.y)
+                }
+            })
             this.renderer.render(this.stage)
         },
 
@@ -495,6 +507,20 @@ export default {
                     bug.velocity.add(targetVelocity).normalize().multiply(bug.speed)
                 }
             })
+
+            this.towers.forEach(tower => {
+                if (!tower.bug || tower.bug.removed || !this.towerCanReachBug(tower, tower.bug)) {
+                    tower.bug = this.bugs.find(bug => {
+                        return this.towerCanReachBug(tower, bug)
+                    })
+                }
+            })
+        },
+
+        towerCanReachBug (tower, bug) {
+            return new Vector(bug.position.x, bug.position.y)
+                .substract(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
+                .length() <= (tower.maxDistance * this.tileSize)
         },
 
         loadAssets () {
@@ -561,7 +587,8 @@ export default {
                 tile: new Vector(),
                 random: Math.random() * 1000,
                 maxHealth: 100,
-                health: 100
+                health: 100,
+                removed: false
             }
             this.bugs.push(bug)
 
@@ -617,6 +644,7 @@ export default {
         },
 
         removeBug (bug) {
+            bug.removed = true
             let index = this.bugs.indexOf(bug)
             if (index > -1) {
                 this.bugs.splice(index, 1)
@@ -657,10 +685,17 @@ export default {
             cannonSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
             this.towerContainer.addChild(cannonSprite)
 
+            // debug graphics
+            let debugGraphics = new Graphics()
+            this.towerContainer.addChild(debugGraphics)
+
             this.towers.push({
                 position: new Vector(x, y),
                 baseSprite,
-                cannonSprite
+                cannonSprite,
+                maxDistance: 3,
+                targetBug: null,
+                debugGraphics
             })
         },
 
