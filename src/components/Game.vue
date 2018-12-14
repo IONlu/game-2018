@@ -587,9 +587,15 @@ export default {
         },
 
         onClick (evt) {
-            this.selectedTile = {
+            let tile = {
                 x: Math.floor(evt.world.x / this.tileSize),
                 y: Math.floor(evt.world.y / this.tileSize)
+            }
+            if (this.isBlocked(tile.x, tile.y)) {
+                this.selectedTile = {
+                    x: Math.floor(evt.world.x / this.tileSize),
+                    y: Math.floor(evt.world.y / this.tileSize)
+                }
             }
         },
 
