@@ -549,7 +549,9 @@ export default {
                 speed: 5 + Math.random(),
                 rotationSpeed: 0.5 + (Math.random() / 4),
                 tile: new Vector(),
-                random: Math.random() * 1000
+                random: Math.random() * 1000,
+                maxHealth: 100,
+                health: 100
             }
             this.bugs.push(bug)
 
