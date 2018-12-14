@@ -42,51 +42,57 @@ export default class Vector {
         return this
     }
 
-    add (vector) {
-        if (isVector(vector)) {
-            this.x += vector.x
-            this.y += vector.y
+    add (xOrVector, y = null) {
+        if (isVector(xOrVector)) {
+            this.x += xOrVector.x
+            this.y += xOrVector.y
         } else {
-            this.x += vector
-            this.y += vector
+            y = y === null ? xOrVector : y
+            this.x += xOrVector
+            this.y += y
         }
         return this
     }
 
-    substract (vector) {
-        if (isVector(vector)) {
-            this.x -= vector.x
-            this.y -= vector.y
+    substract (xOrVector, y = null) {
+        if (isVector(xOrVector)) {
+            this.x -= xOrVector.x
+            this.y -= xOrVector.y
         } else {
-            this.x -= vector
-            this.y -= vector
+            y = y === null ? xOrVector : y
+            this.x -= xOrVector
+            this.y -= y
         }
         return this
     }
 
-    multiply (vector) {
-        if (isVector(vector)) {
-            this.x *= vector.x
-            this.y *= vector.y
+    multiply (xOrVector, y = null) {
+        if (isVector(xOrVector)) {
+            this.x *= xOrVector.x
+            this.y *= xOrVector.y
         } else {
-            this.x *= vector
-            this.y *= vector
+            y = y === null ? xOrVector : y
+            this.x *= xOrVector
+            this.y *= y
         }
         return this
     }
 
-    divide (vector) {
-        if (isVector(vector)) {
-            if (vector.x !== 0) {
-                this.x /= vector.x
+    divide (xOrVector, y = null) {
+        if (isVector(xOrVector)) {
+            if (xOrVector.x !== 0) {
+                this.x /= xOrVector.x
             }
-            if (vector.y !== 0) {
-                this.y /= vector.y
+            if (xOrVector.y !== 0) {
+                this.y /= xOrVector.y
             }
         } else {
-            if (vector !== 0) {
-                this.x /= vector
-                this.y /= vector
+            y = y === null ? xOrVector : y
+            if (xOrVector !== 0) {
+                this.x /= xOrVector
+            }
+            if (y !== 0) {
+                this.y /= y
             }
         }
         return this
