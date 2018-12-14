@@ -36,6 +36,7 @@
                 </div>
                 <div :class="$style.panelContent">
                     Left Panel
+                    <button @click="onBuildTowerClick">Tower 1</button>
                 </div>
             </div>
             <resize-observer
@@ -138,6 +139,7 @@ import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
 import Vector from '../Vector'
 import BugAssets from '../assets/bugs'
+import TowerAssets from '../assets/tower'
 
 // https://en.wikipedia.org/wiki/Linear_interpolation
 const lerp = (v1, v2, dt) => {
@@ -172,6 +174,7 @@ export default {
             },
             resources: {},
             bugs: [],
+            towers: [],
             selectedTile: null,
             health: 100,
             bugsLeft: 0,
@@ -329,6 +332,10 @@ export default {
         // create container for the bugs
         this.bugContainer = new Container()
         this.viewport.addChild(this.bugContainer)
+
+        // create container for towers
+        this.towerContainer = new Container()
+        this.viewport.addChild(this.towerContainer)
 
         // create container for the ui elements
         this.uiContainer = new Container()
@@ -494,6 +501,9 @@ export default {
             for (let key in BugAssets) {
                 this.loader.add('bug:' + key, BugAssets[key])
             }
+            for (let key in TowerAssets) {
+                this.loader.add('tower:' + key, TowerAssets[key])
+            }
             this.loader.load(this.onLoad)
         },
 
@@ -620,6 +630,45 @@ export default {
             if (this.isMobile) {
                 this.showPanel = !this.showPanel
             }
+        },
+
+        hasTower (x, y) {
+            return this.towers.find(tower => {
+                return tower.position.x === x && tower.position.y === y
+            })
+        },
+
+        buildTower (type, x, y) {
+            if (!this.isBlocked(x, y) || this.hasTower(x, y)) {
+                return
+            }
+
+            // create baseSprite
+            let baseSprite = new Sprite(this.resources['tower:base1'].texture)
+            baseSprite.scale.set(0.3)
+            baseSprite.anchor.set(0.5)
+            baseSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
+            this.towerContainer.addChild(baseSprite)
+
+            // create cannonSprite
+            let cannonSprite = new Sprite(this.resources['tower:' + type].texture)
+            cannonSprite.scale.set(0.35)
+            cannonSprite.anchor.set(0.5)
+            cannonSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
+            this.towerContainer.addChild(cannonSprite)
+
+            this.towers.push({
+                position: new Vector(x, y),
+                baseSprite,
+                cannonSprite
+            })
+        },
+
+        onBuildTowerClick () {
+            if (!this.selectedTile) {
+                return
+            }
+            this.buildTower('cannon', this.selectedTile.x, this.selectedTile.y)
         }
     }
 }
