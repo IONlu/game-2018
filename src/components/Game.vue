@@ -56,13 +56,13 @@
         width: 100vw;
         height: 100vh;
         font-family: Arial, sans-serif;
+        background: url(../assets/Background.svg) center center no-repeat fixed;
+        background-size: cover;
     }
 
     .renderContainer {
         width: calc(70vw);
         height: 95vh;
-        background: url(../assets/Background.svg) center center no-repeat fixed;
-        background-size: cover;
         display: inline-block;
     }
 
@@ -75,11 +75,11 @@
         height: 5vh;
         line-height: 5vh;
         width: 100%;
-        background: #000000;
+        background: #00000099;
         color: #FFF;
         border-style: solid;
         border-color: #999;
-        border-width: 0 0 1px 0;
+        border-width: 0 0 2px 0;
         font-size: 3vh;
         text-align: right;
     }
@@ -89,7 +89,11 @@
         max-width: 100%;
         width: 0;
         height: 95vh;
-        background: #009900;
+        background: #00000099;
+        color: #FFF;
+        border-style: solid;
+        border-color: #999;
+        border-width: 0 2px 0 0;
         display: inline-block;
     }
 
@@ -110,7 +114,12 @@
         top: calc(50% - 20px);
         height: 40px;
         width: 40px;
-        background: #009900;
+        background: #00000099;
+        color: #FFF;
+        border-style: solid;
+        border-color: #999;
+        border-width: 2px 2px 2px 0;
+        border-radius: 0 20px 20px 0;
         display: flex;
         align-items: center;
         justify-content: center;
