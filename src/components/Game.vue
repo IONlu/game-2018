@@ -8,20 +8,13 @@
             <div
                 :class="$style.topBar"
             >
-                <div
-                    v-if="lastBugSpawned"
-                    :class="$style.topbarElement"
-                    @click="nextWave"
-                >
-                    <fa-icon icon="play" /> Next Wave
-                </div>
-                <div :class="$style.topbarElement">
+                <div>
                     <fa-icon icon="water" /> {{ wave }}
                 </div>
-                <div :class="$style.topbarElement">
+                <div>
                     <fa-icon icon="bug" /> {{ bugsLeft }}
                 </div>
-                <div :class="$style.topbarElement">
+                <div>
                     <fa-icon icon="heart" /> {{ health }}
                 </div>
             </div>
@@ -47,6 +40,12 @@
                     :class="$style.renderContainer"
                 />
             </resize-observer>
+            <div
+                :class="$style.nextWave"
+                @click="nextWave"
+            >
+                <fa-icon icon="play" /> Next Wave
+            </div>
         </div>
     </resize-observer>
 </template>
@@ -164,7 +163,9 @@
         border-width: 0 0 2px 0;
         font-size: 3vmin;
         text-align: right;
-
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1em;
     }
 
     .panelContent {
@@ -173,9 +174,23 @@
         overflow: hidden;
     }
 
-    .topbarElement {
-        display: inline-block;
-        margin: 0 30px;
+    .nextWave {
+        position: absolute;
+        border-radius: 20px;
+        background: #00000099;
+        color: #FFF;
+        border-style: solid;
+        border-color: #999;
+        right: 1em;
+        padding: 1em;
+    }
+
+    .landscape .nextWave {
+        bottom: 1em;
+    }
+
+    .portrait .nextWave {
+        top: calc(5vmin + 1em);
     }
 </style>
 
