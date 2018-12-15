@@ -58,36 +58,22 @@
         font-family: Arial, sans-serif;
         background: url(../assets/Background.svg) center center no-repeat fixed;
         background-size: cover;
+
+        * {
+            box-sizing: border-box;
+        }
     }
 
     .renderContainer {
-        width: calc(70vw);
-        height: 95vh;
         display: inline-block;
-    }
-
-    .renderer {
-        width: 100%;
-        height: 100%;
-    }
-
-    .topBar {
-        height: 5vh;
-        line-height: 5vh;
-        width: 100%;
-        background: #00000099;
-        color: #FFF;
-        border-style: solid;
-        border-color: #999;
-        border-width: 0 0 2px 0;
-        font-size: 3vh;
-        text-align: right;
+        width: 70vw;
+        height: calc(100vh - 5vmin);
     }
 
     .panel {
         float: left;
+        width: 30vw;
         max-width: 100%;
-        width: 0;
         height: 95vh;
         background: #00000099;
         color: #FFF;
@@ -97,46 +83,99 @@
         display: inline-block;
     }
 
+    .panelToggle {
+        display: none;
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        background: #00000099;
+        color: #FFF;
+        border-style: solid;
+        border-color: #999;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    .mobile {
+        .renderContainer {
+            width: 100vw;
+        }
+
+        &.landscape {
+            .panel {
+                position: absolute;
+                width: 300px;
+                left: -300px;
+                transition: left 0.2s;
+
+                &.showPanel {
+                    left: 0px;
+                }
+            }
+
+            .panelToggle {
+                display: flex;
+                left: 100%;
+                top: calc(50% - 25px);
+                border-width: 2px 2px 2px 0;
+                border-radius: 0 20px 20px 0;
+            }
+        }
+
+        &.portrait {
+            .panel {
+                width: 100vw;
+                position: absolute;
+                height: 300px;
+                max-height: 100vh;
+                bottom: -300px;
+                transition: bottom 0.2s;
+                border-width: 2px 0 0 0;
+
+                &.showPanel {
+                    bottom: 0px;
+                }
+            }
+
+            .panelToggle {
+                display: flex;
+                top: -50px;
+                left: calc(50% - 25px);
+                border-width: 2px 2px 0 2px;
+                border-radius: 20px 20px 0 0;
+            }
+        }
+    }
+
+    .renderer {
+        width: 100%;
+        height: 100%;
+    }
+
+    .topBar {
+        height: 5vmin;
+        line-height: 5vmin;
+        width: 100%;
+        background: #00000099;
+        color: #FFF;
+        border-style: solid;
+        border-color: #999;
+        border-width: 0 0 2px 0;
+        font-size: 3vmin;
+        text-align: right;
+
+    }
+
     .panelContent {
         width: 100%;
         height: 100%;
         overflow: hidden;
     }
 
-    .panel.showPanel {
-        min-width: 300px;
-        width: 30%;
-    }
-
-    .panelToggle {
-        position: absolute;
-        left: 100%;
-        top: calc(50% - 20px);
-        height: 40px;
-        width: 40px;
-        background: #00000099;
-        color: #FFF;
-        border-style: solid;
-        border-color: #999;
-        border-width: 2px 2px 2px 0;
-        border-radius: 0 20px 20px 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-    }
-
     .topbarElement {
         display: inline-block;
         margin: 0 30px;
-    }
-
-    .game.mobile .renderContainer {
-        width: 100vw;
-    }
-
-    .game.mobile .panel {
-        position: absolute;
     }
 </style>
 
@@ -194,13 +233,19 @@ export default {
 
     computed: {
         isMobile () {
-            return this.screen.width < 1000
+            return this.screen.width <= 1000 || this.screen.height <= 1000
+        },
+
+        isPortrait () {
+            return this.screen.width < this.screen.height
         },
 
         mainClasses () {
             return {
                 [this.$style.game]: true,
-                [this.$style.mobile]: this.isMobile
+                [this.$style.mobile]: this.isMobile,
+                [this.$style.portrait]: this.isPortrait,
+                [this.$style.landscape]: !this.isPortrait
             }
         },
 
@@ -286,6 +331,11 @@ export default {
         },
 
         togglePanelIcon () {
+            if (this.isPortrait) {
+                return this.showPanel
+                    ? 'angle-double-down'
+                    : 'angle-double-up'
+            }
             return this.showPanel
                 ? 'angle-double-left'
                 : 'angle-double-right'
