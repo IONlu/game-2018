@@ -141,11 +141,6 @@ import Vector from '../Vector'
 import BugAssets from '../assets/bugs'
 import TowerAssets from '../assets/tower'
 
-// https://en.wikipedia.org/wiki/Linear_interpolation
-const lerp = (v1, v2, dt) => {
-    return (1 - dt) * v1 + dt * v2
-}
-
 export default {
     name: 'Game',
 
@@ -431,8 +426,8 @@ export default {
 
         render (dt) {
             this.bugs.forEach(bug => {
-                bug.sprite.position.x = lerp(bug.position.x, bug.position.x + bug.velocity.x, dt)
-                bug.sprite.position.y = lerp(bug.position.y, bug.position.y + bug.velocity.y, dt)
+                bug.sprite.position.x = bug.position.x + (bug.velocity.x * dt)
+                bug.sprite.position.y = bug.position.y + (bug.velocity.y * dt)
                 bug.sprite.rotation = bug.velocity.angle()
             })
             this.towers.forEach(tower => {
