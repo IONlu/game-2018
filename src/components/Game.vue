@@ -41,6 +41,7 @@
                 />
             </resize-observer>
             <div
+                v-if="lastBugSpawned"
                 :class="$style.nextWave"
                 @click="nextWave"
             >
