@@ -33,7 +33,7 @@
                 </div>
             </div>
             <resize-observer
-                @resize="onRenderContainerResize"
+                @resize="updateRendererSize"
             >
                 <div
                     ref="renderContainer"
@@ -460,13 +460,9 @@ export default {
         this.renderer.view.classList.add(this.$style.renderer)
         this.$refs.renderContainer.appendChild(this.renderer.view)
 
+        this.updateRendererSize()
+
         this.viewport.interaction = this.renderer.interaction
-        this.viewport.resize(
-            this.$refs.renderContainer.clientWidth,
-            this.$refs.renderContainer.clientHeight,
-            this.viewportSize.width,
-            this.viewportSize.height
-        )
         this.viewport.fitWorld()
         this.viewport.moveCenter((this.viewportSize.width / 2) - this.tileSize, (this.viewportSize.height / 2) - this.tileSize)
 
@@ -603,13 +599,17 @@ export default {
             this.loader.load(this.onLoad)
         },
 
-        onRenderContainerResize ({ height, width }) {
+        updateRendererSize () {
+            let width = this.$refs.renderContainer.clientWidth
+            let height = this.$refs.renderContainer.clientHeight
+            let dpr = window.devicePixelRatio || 1
+
             if (this.renderer) {
-                this.renderer.resize(width, height)
+                this.renderer.resize(width  * dpr, height * dpr)
             }
             this.viewport.resize(
-                width,
-                height,
+                width * dpr,
+                height * dpr,
                 this.viewportSize.width,
                 this.viewportSize.height
             )
