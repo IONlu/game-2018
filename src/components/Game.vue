@@ -204,6 +204,7 @@ import Ticker from '../Ticker'
 import Vector from '../Vector'
 import BugAssets from '../assets/bugs'
 import TowerAssets from '../assets/tower'
+import TowerConfig from '../config/towers'
 
 export default {
     name: 'Game',
@@ -736,22 +737,22 @@ export default {
             })
         },
 
-        buildTower (type, x, y) {
+        buildTower (data, x, y) {
             if (!this.isBlocked(x, y) || this.hasTower(x, y)) {
                 return
             }
 
             // create baseSprite
-            let baseSprite = new Sprite(this.resources['tower:base1'].texture)
+            let baseSprite = new Sprite(this.resources['tower:' + data.base[0]].texture)
             baseSprite.scale.set(0.3)
             baseSprite.anchor.set(0.5)
             baseSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
             this.towerContainer.addChild(baseSprite)
 
             // create cannonSprite
-            let cannonSprite = new Sprite(this.resources['tower:' + type].texture)
-            cannonSprite.scale.set(0.35)
-            cannonSprite.anchor.set(0.5)
+            let cannonSprite = new Sprite(this.resources['tower:' + data.cannon[0]].texture)
+            cannonSprite.scale.set(0.25)
+            cannonSprite.anchor.set(...data.anchor)
             cannonSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
             this.towerContainer.addChild(cannonSprite)
 
@@ -773,7 +774,10 @@ export default {
             if (!this.selectedTile) {
                 return
             }
-            this.buildTower('cannon', this.selectedTile.x, this.selectedTile.y)
+            let towerKeys = Object.keys(TowerConfig)
+            let towerKey = towerKeys[Math.floor(Math.random() * towerKeys.length)]
+
+            this.buildTower(TowerConfig[towerKey], this.selectedTile.x, this.selectedTile.y)
         }
     }
 }
