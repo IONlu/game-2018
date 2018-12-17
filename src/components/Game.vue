@@ -235,6 +235,7 @@ export default {
             resources: {},
             bugs: [],
             towers: [],
+            bullets: [],
             selectedTile: null,
             health: 100,
             bugsLeft: 0,
@@ -408,6 +409,10 @@ export default {
         this.towerContainer = new Container()
         this.viewport.addChild(this.towerContainer)
 
+        // create bullet container
+        this.bulletContainer = new Container()
+        this.viewport.addChild(this.bulletContainer)
+
         // create container for the ui elements
         this.uiContainer = new Container()
         this.viewport.addChild(this.uiContainer)
@@ -496,6 +501,10 @@ export default {
             )
         },
 
+        isRemoved (item) {
+            return !item || item.removed
+        },
+
         render (dt) {
             this.bugs.forEach(bug => {
                 bug.sprite.position.x = bug.position.x + (bug.velocity.x * dt)
@@ -504,15 +513,20 @@ export default {
             })
             this.towers.forEach(tower => {
                 tower.debugGraphics.clear()
-                tower.debugGraphics.lineStyle(5, 0x00FF00)
-                if (tower.bug) {
-                    tower.cannonSprite.rotation = new Vector(tower.bug.sprite.position.x, tower.bug.sprite.position.y)
+                tower.debugGraphics.lineStyle(2, 0x00FF00)
+                if (!this.isRemoved(tower.targetBug)) {
+                    tower.cannonSprite.rotation = new Vector(tower.targetBug.sprite.position.x, tower.targetBug.sprite.position.y)
                         .substract(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
                         .angle()
 
                     tower.debugGraphics.moveTo(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
-                    tower.debugGraphics.lineTo(tower.bug.sprite.position.x, tower.bug.sprite.position.y)
+                    tower.debugGraphics.lineTo(tower.targetBug.sprite.position.x, tower.targetBug.sprite.position.y)
                 }
+            })
+            this.bullets.forEach(bullet => {
+                bullet.sprite.position.x = bullet.position.x + (bullet.velocity.x * dt)
+                bullet.sprite.position.y = bullet.position.y + (bullet.velocity.y * dt)
+                bullet.sprite.rotation = bullet.velocity.angle()
             })
             this.renderer.render(this.stage)
         },
@@ -576,12 +590,39 @@ export default {
             })
 
             this.towers.forEach(tower => {
-                if (!tower.bug || tower.bug.removed || !this.towerCanReachBug(tower, tower.bug)) {
-                    tower.bug = this.bugs.find(bug => {
+                if (this.isRemoved(tower.targetBug) || !this.towerCanReachBug(tower, tower.targetBug)) {
+                    tower.targetBug = this.bugs.find(bug => {
                         return this.towerCanReachBug(tower, bug)
                     })
                 }
+                tower.bulletTimeoutCounter++
+                if (tower.bulletTimeoutCounter === 20) {
+                    tower.bulletTimeoutCounter = 0
+                    this.shoot(tower)
+                }
             })
+
+            this.bullets.forEach(bullet => {
+                if (this.isRemoved(bullet.targetBug)) {
+                    bullet.removed = true
+                } else {
+                    bullet.position.add(bullet.velocity)
+                    let targetVector = bullet.targetBug.position.clone().substract(bullet.position)
+                    if (targetVector.length() <= 30) {
+                        bullet.targetBug.health -= 10
+                        if (bullet.targetBug.health <= 10) {
+                            bullet.targetBug.removed = true
+                        }
+                        bullet.removed = true
+                    } else {
+                        bullet.velocity.set(targetVector).normalize().multiply(30)
+                    }
+                }
+            })
+
+            // remove items
+            this.removeBullets()
+            this.removeBugs()
         },
 
         towerCanReachBug (tower, bug) {
@@ -709,19 +750,33 @@ export default {
 
         handleBugReachesEnd (bug) {
             this.health--
-            this.bugsLeft--
-
-            this.removeBug(bug)
+            bug.removed = true
         },
 
-        removeBug (bug) {
-            bug.removed = true
-            let index = this.bugs.indexOf(bug)
-            if (index > -1) {
-                this.bugs.splice(index, 1)
-            }
-            bug.sprite.destroy({
-                children: true
+        removeBugs () {
+            this.bugs = this.bugs.filter(bug => {
+                if (!bug.removed) {
+                    return true
+                }
+                this.bugsLeft--
+                this.bugContainer.removeChild(bug.sprite)
+                bug.sprite.destroy({
+                    children: true
+                })
+                return false
+            })
+        },
+
+        removeBullets () {
+            this.bullets = this.bullets.filter(bullet => {
+                if (!bullet.removed) {
+                    return true
+                }
+                this.bulletContainer.removeChild(bullet.sprite)
+                bullet.sprite.destroy({
+                    children: true
+                })
+                return false
             })
         },
 
@@ -733,7 +788,7 @@ export default {
 
         hasTower (x, y) {
             return this.towers.find(tower => {
-                return tower.position.x === x && tower.position.y === y
+                return tower.tilePosition.x === x && tower.tilePosition.y === y
             })
         },
 
@@ -742,18 +797,21 @@ export default {
                 return
             }
 
+            let tilePosition = new Vector(x, y)
+            let position = tilePosition.add(0.5).multiply(this.tileSize)
+
             // create baseSprite
             let baseSprite = new Sprite(this.resources['tower:' + data.base[0]].texture)
             baseSprite.scale.set(0.3)
             baseSprite.anchor.set(0.5)
-            baseSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
+            baseSprite.position.set(position.x, position.y)
             this.towerContainer.addChild(baseSprite)
 
             // create cannonSprite
             let cannonSprite = new Sprite(this.resources['tower:' + data.cannon[0]].texture)
             cannonSprite.scale.set(0.25)
             cannonSprite.anchor.set(...data.anchor)
-            cannonSprite.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
+            cannonSprite.position.set(position.x, position.y)
             this.towerContainer.addChild(cannonSprite)
 
             // debug graphics
@@ -761,12 +819,33 @@ export default {
             this.towerContainer.addChild(debugGraphics)
 
             this.towers.push({
-                position: new Vector(x, y),
+                tilePosition,
+                position,
                 baseSprite,
                 cannonSprite,
                 maxDistance: 3,
                 targetBug: null,
-                debugGraphics
+                debugGraphics,
+                bullet: data.bullet,
+                bulletTimeoutCounter: 0
+            })
+        },
+
+        shoot (tower) {
+            let position = tower.position.clone()
+
+            // create bulletSprite
+            let sprite = new Sprite(this.resources['tower:' + tower.bullet[0]].texture)
+            sprite.scale.set(0.1)
+            sprite.anchor.set(0.5)
+            sprite.position.set(position.x, position.y)
+            this.bulletContainer.addChild(sprite)
+
+            this.bullets.push({
+                position,
+                targetBug: tower.targetBug,
+                sprite,
+                velocity: new Vector()
             })
         },
 
