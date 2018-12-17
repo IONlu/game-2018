@@ -434,7 +434,7 @@ export default {
         this.ticker.start()
 
         // draw tiles
-        let tileGraphics = [ ...this.map.data ].map((type, index) => {
+        ;([ ...this.map.data ]).map((type, index) => {
             let color
             switch (type) {
                 case 'F':
@@ -664,7 +664,7 @@ export default {
             let dpr = window.devicePixelRatio || 1
 
             if (this.renderer) {
-                this.renderer.resize(width  * dpr, height * dpr)
+                this.renderer.resize(width * dpr, height * dpr)
             }
             this.viewport.resize(
                 width * dpr,
