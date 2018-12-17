@@ -798,7 +798,7 @@ export default {
             }
 
             let tilePosition = new Vector(x, y)
-            let position = tilePosition.add(0.5).multiply(this.tileSize)
+            let position = tilePosition.clone().add(0.5).multiply(this.tileSize)
 
             // create baseSprite
             let baseSprite = new Sprite(this.resources['tower:' + data.base[0]].texture)
