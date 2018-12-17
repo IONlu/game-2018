@@ -245,7 +245,8 @@ export default {
                 height: window.clientHeight
             },
             showPanel: true,
-            lastBugSpawned: true
+            lastBugSpawned: true,
+            debug: false
         }
     },
 
@@ -376,6 +377,14 @@ export default {
 
         isMobile () {
             this.showPanel = !this.isMobile
+        },
+
+        debug () {
+            if (this.debug) {
+                this.viewport.addChild(this.debugContainer)
+            } else {
+                this.viewport.removeChild(this.debugContainer)
+            }
         }
     },
 
@@ -417,6 +426,9 @@ export default {
         this.uiContainer = new Container()
         this.viewport.addChild(this.uiContainer)
 
+        // create debug container
+        this.debugContainer = new Container()
+
         this.loadAssets()
 
         this.ticker.start()
@@ -451,6 +463,9 @@ export default {
         this.selectedTileOverlay.lineStyle(5, 0x3333FF, 0.7, 1)
         this.selectedTileOverlay.beginFill(0x3333FF, 0.5)
         this.selectedTileOverlay.drawRect(0, 0, this.tileSize, this.tileSize)
+
+        // global keydown
+        window.addEventListener('keydown', this.onGlobalKeyDown)
     },
 
     mounted () {
@@ -491,6 +506,8 @@ export default {
         for (let key in this.resources) {
             this.resources[key].texture.destroy(true)
         }
+
+        window.removeEventListener('keydown', this.onGlobalKeyDown)
     },
 
     methods: {
@@ -816,7 +833,7 @@ export default {
 
             // debug graphics
             let debugGraphics = new Graphics()
-            this.towerContainer.addChild(debugGraphics)
+            this.debugContainer.addChild(debugGraphics)
 
             this.towers.push({
                 tilePosition,
@@ -857,6 +874,13 @@ export default {
             let towerKey = towerKeys[Math.floor(Math.random() * towerKeys.length)]
 
             this.buildTower(TowerConfig[towerKey], this.selectedTile.x, this.selectedTile.y)
+        },
+
+        onGlobalKeyDown (evt) {
+            if (evt.key === 'd' && evt.altKey) {
+                evt.preventDefault()
+                this.debug = !this.debug
+            }
         }
     }
 }
