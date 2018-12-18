@@ -481,13 +481,10 @@ export default {
         this.renderer.view.classList.add(this.$style.renderer)
         this.$refs.renderContainer.appendChild(this.renderer.view)
 
-        this.updateRendererSize()
-
         this.viewport.interaction = this.renderer.interaction
-        this.viewport.fitWorld()
-        this.viewport.moveCenter((this.viewportSize.width / 2) - this.tileSize, (this.viewportSize.height / 2) - this.tileSize)
+        this.updateRendererSize()
+        this.fitWorld()
 
-        this.render()
         this.ticker.on('render', this.render)
         this.ticker.on('update', this.update)
     },
@@ -520,6 +517,14 @@ export default {
 
         isRemoved (item) {
             return !item || item.removed
+        },
+
+        fitWorld () {
+            this.viewport.moveCenter(
+                (this.viewportSize.width / 2) - this.tileSize,
+                (this.viewportSize.height / 2) - this.tileSize
+            )
+            this.viewport.fitWorld(true)
         },
 
         render (dt) {
@@ -659,19 +664,21 @@ export default {
         },
 
         updateRendererSize () {
-            let width = this.$refs.renderContainer.clientWidth
-            let height = this.$refs.renderContainer.clientHeight
             let dpr = window.devicePixelRatio || 1
+            let width = this.$refs.renderContainer.clientWidth * dpr
+            let height = this.$refs.renderContainer.clientHeight * dpr
+            let viewportCenter = this.viewport.center
 
             if (this.renderer) {
-                this.renderer.resize(width * dpr, height * dpr)
+                this.renderer.resize(width, height)
             }
             this.viewport.resize(
-                width * dpr,
-                height * dpr,
+                width,
+                height,
                 this.viewportSize.width,
                 this.viewportSize.height
             )
+            this.viewport.moveCenter(viewportCenter.x, viewportCenter.y)
         },
 
         onResize ({ height, width }) {
