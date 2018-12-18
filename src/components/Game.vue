@@ -74,7 +74,7 @@
         float: left;
         width: 30vw;
         max-width: 100%;
-        height: 95vh;
+        height: calc(100vh - 5vmin);
         background: #00000099;
         color: #FFF;
         border-style: solid;
@@ -252,7 +252,7 @@ export default {
 
     computed: {
         isMobile () {
-            return this.screen.width <= 1000 || this.screen.height <= 1000
+            return this.screen.width <= 1000 && this.screen.height <= 1000
         },
 
         isPortrait () {
