@@ -11,12 +11,18 @@ export default class Ticker extends EventEmitter {
     }
 
     start () {
+        if (this.isRunning) {
+            return
+        }
         this.isRunning = true
         this.lastFrameTime = performance.now()
         this._nextFrame()
     }
 
     stop () {
+        if (!this.isRunning) {
+            return
+        }
         this._cancelNext()
         this.lastFrameTime = null
         this.isRunning = false

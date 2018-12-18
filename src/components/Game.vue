@@ -431,7 +431,9 @@ export default {
 
         this.loadAssets()
 
-        this.ticker.start()
+        if (!document.hidden) {
+            this.ticker.start()
+        }
 
         // draw tiles
         ;([ ...this.map.data ]).map((type, index) => {
@@ -466,6 +468,9 @@ export default {
 
         // global keydown
         window.addEventListener('keydown', this.onGlobalKeyDown)
+
+        // check if document is visible
+        document.addEventListener('visibilitychange', this.onVisibilityChange)
     },
 
     mounted () {
@@ -505,6 +510,7 @@ export default {
         }
 
         window.removeEventListener('keydown', this.onGlobalKeyDown)
+        document.removeEventListener('visibilitychange', this.onVisibilityChange)
     },
 
     methods: {
@@ -887,6 +893,14 @@ export default {
             if (evt.key === 'd' && evt.altKey) {
                 evt.preventDefault()
                 this.debug = !this.debug
+            }
+        },
+
+        onVisibilityChange () {
+            if (document.hidden) {
+                this.ticker.stop()
+            } else {
+                this.ticker.start()
             }
         }
     }
