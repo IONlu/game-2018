@@ -716,7 +716,7 @@ export default {
                         bullet.targetBug.health -= 10
                         if (bullet.targetBug.health <= 10) {
                             bullet.targetBug.removed = true
-                            this.money += 5
+                            this.money += 2
                         }
                         this.updateHealthBar(bullet.targetBug)
                         bullet.removed = true
