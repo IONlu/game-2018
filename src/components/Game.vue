@@ -730,13 +730,13 @@ export default {
             )
         },
 
-        spawnBug (texture) {
+        spawnBug (texture, wave) {
             let sprite = new Sprite(texture)
             sprite.scale.set(0.2)
             sprite.anchor.set(0.5)
             this.bugContainer.addChild(sprite)
 
-            let health = 100 + (20 * (this.wave - 1))
+            let health = 100 + (20 * (wave - 1))
 
             let bug = {
                 sprite,
@@ -765,10 +765,11 @@ export default {
             this.lastBugSpawned = false
             this.wave++
             this.bugsLeft += count
+            let wave = this.wave
             let _spawn = () => {
                 if (count > 0) {
                     count--
-                    this.spawnBug(bugTexture)
+                    this.spawnBug(bugTexture, wave)
                     setTimeout(() => {
                         _spawn()
                     }, 1000)
