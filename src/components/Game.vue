@@ -784,7 +784,7 @@ export default {
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
             let bugTexture = this.resources['bug:' + randomBugKey].texture
 
-            let count = 50
+            let count = 30
             let tickCounter = 0
             this.lastBugSpawned = false
             this.wave++
