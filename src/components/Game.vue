@@ -199,7 +199,7 @@
     }
 
     .landscape .nextWave {
-        bottom: 1em;
+        bottom: 1vmin;
     }
 
     .portrait .nextWave {
