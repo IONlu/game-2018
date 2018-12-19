@@ -798,7 +798,9 @@ export default {
                         count--
                         this.spawnBug(bugTexture, wave)
                     } else {
-                        this.lastBugSpawned = true
+                        if (this.wave === wave) {
+                            this.lastBugSpawned = true
+                        }
                     }
                     tickCounter = 0
                 }
