@@ -561,15 +561,20 @@ export default {
                 bug.healthBar.position.set(bug.sprite.position.x, bug.sprite.position.y - 40)
             })
             this.towers.forEach(tower => {
-                tower.debugGraphics.clear()
-                tower.debugGraphics.lineStyle(2, 0x00FF00)
+                if (this.debug) {
+                    tower.debugGraphics.clear()
+                }
+
                 if (!this.isRemoved(tower.targetBug)) {
                     tower.cannonSprite.rotation = new Vector(tower.targetBug.sprite.position.x, tower.targetBug.sprite.position.y)
                         .substract(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
                         .angle()
 
-                    tower.debugGraphics.moveTo(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
-                    tower.debugGraphics.lineTo(tower.targetBug.sprite.position.x, tower.targetBug.sprite.position.y)
+                    if (this.debug) {
+                        tower.debugGraphics.lineStyle(2, 0x00FF00)
+                        tower.debugGraphics.moveTo(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
+                        tower.debugGraphics.lineTo(tower.targetBug.sprite.position.x, tower.targetBug.sprite.position.y)
+                    }
                 }
             })
             this.bullets.forEach(bullet => {
