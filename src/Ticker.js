@@ -4,7 +4,7 @@ export default class Ticker extends EventEmitter {
     constructor (fps) {
         super()
 
-        this.delta = 1000 / fps
+        this.fps = fps
         this.isRunning = false
         this.handle = null
         this.lastFrameTime = null
@@ -51,5 +51,9 @@ export default class Ticker extends EventEmitter {
         if (this.handle) {
             cancelAnimationFrame(this.handle)
         }
+    }
+
+    set fps (fps) {
+        this.delta = 1000 / fps
     }
 }

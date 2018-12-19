@@ -261,7 +261,8 @@ export default {
             showPanel: true,
             lastBugSpawned: true,
             debug: false,
-            money: 100
+            money: 100,
+            gameSpeed: 20
         }
     },
 
@@ -400,11 +401,15 @@ export default {
             } else {
                 this.viewport.removeChild(this.debugContainer)
             }
+        },
+
+        gameSpeed () {
+            this.ticker.fps = this.gameSpeed
         }
     },
 
     created () {
-        this.ticker = new Ticker(30)
+        this.ticker = new Ticker(this.gameSpeed)
 
         // init asset loader
         this.loader = new loaders.Loader()
