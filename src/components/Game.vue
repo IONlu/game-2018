@@ -64,6 +64,7 @@
         width: 100vw;
         height: 100vh;
         font-family: Arial, sans-serif;
+        font-size: 4vmin;
         background: url(../assets/Background.svg) center center no-repeat fixed;
         background-size: cover;
 
