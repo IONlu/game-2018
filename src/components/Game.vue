@@ -386,7 +386,7 @@ export default {
                 return ''
             }
             let seconds = Math.floor((200 - this.allBugsKilledCounter) / 20)
-            return ` ( ${seconds} )`
+            return ` (${seconds})`
         }
     },
 
