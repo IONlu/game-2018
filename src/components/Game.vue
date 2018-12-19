@@ -249,7 +249,10 @@ export default {
                       'FWWWWWWWWW' +
                       'FFFFFFFFFF' +
                       'WWWWWWWWWF' +
-                      'EFFFFFFFFF'
+                      'EFFFFFFFFF',
+                startOrientation: Math.PI / 2,
+                endOrientation: Math.PI / 2,
+                image: null
             },
             resources: {},
             bugs: [],
