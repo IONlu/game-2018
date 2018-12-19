@@ -731,6 +731,8 @@ export default {
             sprite.anchor.set(0.5)
             this.bugContainer.addChild(sprite)
 
+            let health = 100 + (20 * (this.wave - 1))
+
             let bug = {
                 sprite,
                 position: new Vector(),
@@ -739,8 +741,8 @@ export default {
                 rotationSpeed: 0.5 + (Math.random() / 4),
                 tile: new Vector(),
                 random: Math.random() * 1000,
-                maxHealth: 100,
-                health: 100,
+                maxHealth: health,
+                health: health,
                 removed: false
             }
             this.bugs.push(bug)
