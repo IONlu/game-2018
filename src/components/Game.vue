@@ -902,6 +902,14 @@ export default {
                 evt.preventDefault()
                 this.debug = !this.debug
             }
+
+            if (evt.key.match(/^[0-9]+$/)) {
+                let towerIndex = parseInt(evt.key, 10)
+                let towerKeys = Object.keys(TowerConfig)
+                if (towerIndex < towerKeys.length) {
+                    this.onBuildTowerClick(towerKeys[towerIndex])
+                }
+            }
         },
 
         onVisibilityChange () {
