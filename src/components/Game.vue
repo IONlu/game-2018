@@ -275,7 +275,7 @@ export default {
             nextWaveTimeout: 200,
             nextBugHealth: 100,
             bugHealthIncrement: 20,
-            bugHealthIncrementIncrement: 5
+            bugHealthIncrementIncrement: 7
         }
     },
 
