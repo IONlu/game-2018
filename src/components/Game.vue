@@ -269,7 +269,10 @@ export default {
             money: 100,
             gameSpeed: 20,
             allBugsKilledCounter: 0,
-            nextWaveTimeout: 200
+            nextWaveTimeout: 200,
+            nextBugHealth: 100,
+            bugHealthIncrement: 20,
+            bugHealthIncrementIncrement: 5
         }
     },
 
@@ -786,7 +789,7 @@ export default {
             )
         },
 
-        spawnBug (texture, wave) {
+        spawnBug (texture, health) {
             let sprite = new Sprite(texture)
             sprite.scale.set(0.2)
             sprite.anchor.set(0.5)
@@ -795,8 +798,6 @@ export default {
             let healthBar = new Graphics()
             healthBar.pivot.set(25, 2)
             this.healthBarContainer.addChild(healthBar)
-
-            let health = 100 + (20 * Math.pow(wave - 1, 1.2))
 
             let bug = {
                 sprite,
@@ -837,6 +838,11 @@ export default {
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
             let bugTexture = this.resources['bug:' + randomBugKey].texture
 
+            // update bug health
+            let health = this.nextBugHealth
+            this.nextBugHealth += this.bugHealthIncrement
+            this.bugHealthIncrement += this.bugHealthIncrementIncrement
+
             let count = 30
             let tickCounter = 0
             this.lastBugSpawned = false
@@ -849,7 +855,7 @@ export default {
                 if (tickCounter === 20) {
                     tickCounter = 0
                     count--
-                    this.spawnBug(bugTexture, wave)
+                    this.spawnBug(bugTexture, health)
                     if (count === 0) {
                         if (this.wave === wave) {
                             this.lastBugSpawned = true
