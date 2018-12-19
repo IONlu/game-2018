@@ -433,6 +433,10 @@ export default {
         this.towerContainer = new Container()
         this.viewport.addChild(this.towerContainer)
 
+        // create healthbar container
+        this.healthBarContainer = new Container()
+        this.viewport.addChild(this.healthBarContainer)
+
         // create bullet container
         this.bulletContainer = new Container()
         this.viewport.addChild(this.bulletContainer)
@@ -553,6 +557,8 @@ export default {
                 bug.sprite.position.x = bug.position.x + (bug.velocity.x * dt)
                 bug.sprite.position.y = bug.position.y + (bug.velocity.y * dt)
                 bug.sprite.rotation = bug.velocity.angle()
+
+                bug.healthBar.position.set(bug.sprite.position.x, bug.sprite.position.y - 40)
             })
             this.towers.forEach(tower => {
                 tower.debugGraphics.clear()
@@ -657,6 +663,7 @@ export default {
                             bullet.targetBug.removed = true
                             this.money += 5
                         }
+                        this.updateHealthBar(bullet.targetBug)
                         bullet.removed = true
                     } else {
                         bullet.velocity.set(targetVector).normalize().multiply(30)
@@ -736,6 +743,10 @@ export default {
             sprite.anchor.set(0.5)
             this.bugContainer.addChild(sprite)
 
+            let healthBar = new Graphics()
+            healthBar.pivot.set(25, 2)
+            this.healthBarContainer.addChild(healthBar)
+
             let health = 100 + (20 * (wave - 1))
 
             let bug = {
@@ -748,11 +759,23 @@ export default {
                 random: Math.random() * 1000,
                 maxHealth: health,
                 health: health,
-                removed: false
+                removed: false,
+                healthBar
             }
             this.bugs.push(bug)
 
             this.moveBugToStart(bug)
+            this.updateHealthBar(bug)
+        },
+
+        updateHealthBar (bug) {
+            bug.healthBar.clear()
+            bug.healthBar.lineStyle(4, 0xFF0000)
+            bug.healthBar.moveTo(0, 0)
+            bug.healthBar.lineTo(50, 0)
+            bug.healthBar.lineStyle(4, 0x00FF00)
+            bug.healthBar.moveTo(0, 0)
+            bug.healthBar.lineTo((bug.health / bug.maxHealth) * 50, 0)
         },
 
         nextWave () {
@@ -810,6 +833,10 @@ export default {
                 this.bugsLeft--
                 this.bugContainer.removeChild(bug.sprite)
                 bug.sprite.destroy({
+                    children: true
+                })
+                this.healthBarContainer.removeChild(bug.healthBar)
+                bug.healthBar.destroy({
                     children: true
                 })
                 return false
