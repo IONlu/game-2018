@@ -51,7 +51,7 @@
                 @click="nextWave"
             >
                 <fa-icon icon="play" /> Next Wave
-                <template v-if="noBugsLeftCountDown">
+                <template v-if="bugsLeft === 0">
                     <fa-icon icon="clock" /> {{ noBugsLeftCountDown }}
                 </template>
             </div>
@@ -431,7 +431,9 @@ export default {
         },
 
         bugsLeft () {
-            this.allBugsKilledCounter = 0
+            if (this.bugsLeft) {
+                this.allBugsKilledCounter = 0
+            }
         },
 
         allBugsKilledCounter () {
@@ -624,7 +626,7 @@ export default {
         },
 
         update () {
-            if (this.bugs.length === 0) {
+            if (!this.bugsLeft) {
                 this.allBugsKilledCounter++
             }
 
