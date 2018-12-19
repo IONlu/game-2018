@@ -263,7 +263,8 @@ export default {
             debug: false,
             money: 100,
             gameSpeed: 20,
-            allBugsKilledCounter: 0
+            allBugsKilledCounter: 0,
+            nextWaveTimeout: 200
         }
     },
 
@@ -385,7 +386,7 @@ export default {
             if (this.bugsLeft > 0) {
                 return ''
             }
-            let seconds = Math.floor((200 - this.allBugsKilledCounter) / 20)
+            let seconds = Math.floor((this.nextWaveTimeout - this.allBugsKilledCounter) / 20)
             return ` (${seconds})`
         }
     },
@@ -425,7 +426,7 @@ export default {
         },
 
         allBugsKilledCounter () {
-            if (this.lastBugSpawned && this.allBugsKilledCounter >= 200) {
+            if (this.lastBugSpawned && this.allBugsKilledCounter >= this.nextWaveTimeout) {
                 this.nextWave()
             }
         }
