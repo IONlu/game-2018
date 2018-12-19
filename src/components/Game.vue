@@ -785,22 +785,25 @@ export default {
             let bugTexture = this.resources['bug:' + randomBugKey].texture
 
             let count = 50
+            let tickCounter = 0
             this.lastBugSpawned = false
             this.wave++
             this.bugsLeft += count
             let wave = this.wave
+
             let _spawn = () => {
-                if (count > 0) {
-                    count--
-                    this.spawnBug(bugTexture, wave)
-                    setTimeout(() => {
-                        _spawn()
-                    }, 1000)
-                } else {
-                    this.lastBugSpawned = true
+                tickCounter++
+                if (tickCounter === 20) {
+                    if (count > 0) {
+                        count--
+                        this.spawnBug(bugTexture, wave)
+                    } else {
+                        this.lastBugSpawned = true
+                    }
+                    tickCounter = 0
                 }
             }
-            _spawn()
+            this.ticker.on('update', _spawn)
         },
 
         isBlocked (x, y) {
