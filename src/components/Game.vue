@@ -804,15 +804,12 @@ export default {
             let _spawn = () => {
                 tickCounter++
                 if (tickCounter === 20) {
-                    if (count > 0) {
-                        count--
-                        this.spawnBug(bugTexture, wave)
-                    } else {
-                        if (this.wave === wave) {
-                            this.lastBugSpawned = true
-                        }
-                    }
                     tickCounter = 0
+                    count--
+                    this.spawnBug(bugTexture, wave)
+                    if (count === 0) {
+                        this.ticker.removeListener('update', _spawn)
+                    }
                 }
             }
             this.ticker.on('update', _spawn)
