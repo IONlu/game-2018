@@ -808,6 +808,9 @@ export default {
                     count--
                     this.spawnBug(bugTexture, wave)
                     if (count === 0) {
+                        if (this.wave === wave) {
+                            this.lastBugSpawned = true
+                        }
                         this.ticker.removeListener('update', _spawn)
                     }
                 }
