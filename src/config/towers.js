@@ -11,7 +11,8 @@ export default {
         bullet: [
             'cannon-ammo'
         ],
-        anchor: [ 0.5, 0.7 ]
+        anchor: [ 0.5, 0.7 ],
+        price: 20
     },
 
     ion: {
@@ -26,7 +27,8 @@ export default {
         bullet: [
             'ion-ammo'
         ],
-        anchor: [ 0.5 ]
+        anchor: [ 0.5 ],
+        price: 20
     },
 
     shield: {
@@ -43,7 +45,8 @@ export default {
             'shield-ammo2',
             'shield-ammo3'
         ],
-        anchor: [ 0.5 ]
+        anchor: [ 0.5 ],
+        price: 20
     },
 
     tank: {
@@ -58,7 +61,8 @@ export default {
         bullet: [
             'tank-ammo'
         ],
-        anchor: [ 0.5, 0.7 ]
+        anchor: [ 0.5, 0.7 ],
+        price: 20
     },
 
     tracer: {
@@ -75,6 +79,7 @@ export default {
         bullet: [
             'tracer-ammo'
         ],
-        anchor: [ 0.5 ]
+        anchor: [ 0.5 ],
+        price: 20
     }
 }

@@ -9,6 +9,9 @@
                 :class="$style.topBar"
             >
                 <div>
+                    <fa-icon icon="dollar-sign" /> {{ money }}
+                </div>
+                <div>
                     <fa-icon icon="water" /> {{ wave }}
                 </div>
                 <div>
@@ -257,7 +260,8 @@ export default {
             },
             showPanel: true,
             lastBugSpawned: true,
-            debug: false
+            debug: false,
+            money: 100
         }
     },
 
@@ -651,6 +655,7 @@ export default {
                         bullet.targetBug.health -= 10
                         if (bullet.targetBug.health <= 10) {
                             bullet.targetBug.removed = true
+                            this.money += 5
                         }
                         bullet.removed = true
                     } else {
@@ -836,9 +841,11 @@ export default {
         },
 
         buildTower (data, x, y) {
-            if (!this.isBlocked(x, y) || this.hasTower(x, y)) {
+            if (!this.isBlocked(x, y) || this.hasTower(x, y) || this.money < data.price) {
                 return
             }
+
+            this.money -= data.price
 
             let tilePosition = new Vector(x, y)
             let position = tilePosition.clone().add(0.5).multiply(this.tileSize)
@@ -906,7 +913,7 @@ export default {
             }
 
             if (evt.key.match(/^[0-9]+$/)) {
-                let towerIndex = parseInt(evt.key, 10)
+                let towerIndex = parseInt(evt.key, 10) - 1
                 let towerKeys = Object.keys(TowerConfig)
                 if (towerIndex < towerKeys.length) {
                     this.onBuildTowerClick(towerKeys[towerIndex])
