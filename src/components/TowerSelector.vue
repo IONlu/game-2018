@@ -18,9 +18,9 @@
     .container {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-column-gap: 1em;
-        grid-row-gap: 1em;
-        margin: 1em;
+        grid-column-gap: 0.5em;
+        grid-row-gap: 0.5em;
+        margin: 0.5em;
     }
 
     .tower {

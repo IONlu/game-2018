@@ -194,13 +194,13 @@
         color: #FFF;
         border-style: solid;
         border-color: #999;
-        right: 1vmin;
+        right: 2vmin;
         padding: 1vmin;
         cursor: pointer;
     }
 
     .landscape .nextWave {
-        bottom: 1vmin;
+        bottom: 2vmin;
     }
 
     .portrait .nextWave {
