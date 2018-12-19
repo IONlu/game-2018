@@ -21,7 +21,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
     faHeart, faAngleDoubleRight, faAngleDoubleLeft,
     faAngleDoubleUp, faAngleDoubleDown,
-    faWater, faBug, faPlay, faDollarSign
+    faWater, faBug, faPlay, faDollarSign, faClock
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -34,6 +34,7 @@ library.add(faWater)
 library.add(faBug)
 library.add(faPlay)
 library.add(faDollarSign)
+library.add(faClock)
 Vue.component('fa-icon', FontAwesomeIcon)
 
 export default {

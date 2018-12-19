@@ -46,11 +46,14 @@
                 />
             </resize-observer>
             <div
-                v-if="canStartNextWave"
+                v-if="showNextWaveButton"
                 :class="$style.nextWave"
                 @click="nextWave"
             >
-                <fa-icon icon="play" /> Next Wave{{noBugsLeftCountDownText}}
+                <fa-icon icon="play" /> Next Wave
+                <template v-if="noBugsLeftCountDown">
+                    <fa-icon icon="clock" /> {{ noBugsLeftCountDown }}
+                </template>
             </div>
         </div>
     </resize-observer>
@@ -185,13 +188,14 @@
 
     .nextWave {
         position: absolute;
-        border-radius: 20px;
+        border-radius: 1vmax;
         background: #00000099;
         color: #FFF;
         border-style: solid;
         border-color: #999;
-        right: 1em;
-        padding: 1em;
+        right: 1vmin;
+        padding: 1vmin;
+        cursor: pointer;
     }
 
     .landscape .nextWave {
@@ -379,15 +383,19 @@ export default {
         },
 
         canStartNextWave () {
-            return this.lastBugSpawned
+            return this.wave === 0 || this.lastBugSpawned
         },
 
-        noBugsLeftCountDownText () {
+        noBugsLeftCountDown () {
             if (this.bugsLeft > 0) {
                 return ''
             }
             let seconds = Math.floor((this.nextWaveTimeout - this.allBugsKilledCounter) / 20)
-            return ` (${seconds})`
+            return seconds
+        },
+
+        showNextWaveButton () {
+            return this.wave > 0 && this.canStartNextWave
         }
     },
 
@@ -817,6 +825,10 @@ export default {
         },
 
         nextWave () {
+            if (!this.canStartNextWave) {
+                return
+            }
+
             // random bug texture
             let bugKeys = Object.keys(BugAssets)
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
