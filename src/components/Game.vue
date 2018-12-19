@@ -747,7 +747,7 @@ export default {
             healthBar.pivot.set(25, 2)
             this.healthBarContainer.addChild(healthBar)
 
-            let health = 100 + (20 * (wave - 1))
+            let health = 100 + (50 * Math.pow(wave - 1, 1.5))
 
             let bug = {
                 sprite,
