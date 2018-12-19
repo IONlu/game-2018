@@ -955,6 +955,14 @@ export default {
                 this.debug = !this.debug
             }
 
+            if (evt.key === 's' && evt.altKey) {
+                evt.preventDefault()
+                this.gameSpeed += 20
+                if (this.gameSpeed > 60) {
+                    this.gameSpeed = 20
+                }
+            }
+
             if (evt.key.match(/^[0-9]+$/)) {
                 let towerIndex = parseInt(evt.key, 10) - 1
                 let towerKeys = Object.keys(TowerConfig)
