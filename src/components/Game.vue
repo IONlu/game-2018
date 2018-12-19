@@ -28,8 +28,10 @@
                     <fa-icon :icon="togglePanelIcon" />
                 </div>
                 <div :class="$style.panelContent">
-                    Left Panel
-                    <button @click="onBuildTowerClick">Tower 1</button>
+                    <tower-selector
+                        :class="$style.towerSelector"
+                        @select="onBuildTowerClick"
+                    />
                 </div>
             </div>
             <resize-observer
@@ -173,6 +175,9 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .nextWave {
@@ -193,6 +198,10 @@
     .portrait .nextWave {
         top: calc(5vmin + 1em);
     }
+
+    .towerSelector {
+        width: 100%;
+    }
 </style>
 
 <script>
@@ -205,12 +214,14 @@ import Vector from '../Vector'
 import BugAssets from '../assets/bugs'
 import TowerAssets from '../assets/tower'
 import TowerConfig from '../config/towers'
+import TowerSelector from './TowerSelector'
 
 export default {
     name: 'Game',
 
     components: {
-        ResizeObserver
+        ResizeObserver,
+        TowerSelector
     },
 
     data () {
@@ -879,14 +890,11 @@ export default {
             })
         },
 
-        onBuildTowerClick () {
+        onBuildTowerClick (tower) {
             if (!this.selectedTile) {
                 return
             }
-            let towerKeys = Object.keys(TowerConfig)
-            let towerKey = towerKeys[Math.floor(Math.random() * towerKeys.length)]
-
-            this.buildTower(TowerConfig[towerKey], this.selectedTile.x, this.selectedTile.y)
+            this.buildTower(TowerConfig[tower], this.selectedTile.x, this.selectedTile.y)
         },
 
         onGlobalKeyDown (evt) {
