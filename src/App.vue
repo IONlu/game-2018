@@ -1,6 +1,5 @@
 <template>
     <game />
-    <!-- <a-star /> -->
 </template>
 
 <style>
@@ -17,7 +16,6 @@ body {
 <script>
 import Vue from 'vue'
 import Game from './components/Game.vue'
-import AStar from './components/test/AStar.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -41,8 +39,7 @@ export default {
     name: 'App',
 
     components: {
-        Game,
-        AStar
+        Game
     }
 }
 </script>
