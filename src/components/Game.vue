@@ -46,11 +46,11 @@
                 />
             </resize-observer>
             <div
-                v-if="lastBugSpawned"
+                v-if="canStartNextWave"
                 :class="$style.nextWave"
                 @click="nextWave"
             >
-                <fa-icon icon="play" /> Next Wave
+                <fa-icon icon="play" /> Next Wave{{noBugsLeftCountDownText}}
             </div>
         </div>
     </resize-observer>
@@ -262,7 +262,8 @@ export default {
             lastBugSpawned: true,
             debug: false,
             money: 100,
-            gameSpeed: 20
+            gameSpeed: 20,
+            allBugsKilledCounter: 0
         }
     },
 
@@ -374,6 +375,18 @@ export default {
             return this.showPanel
                 ? 'angle-double-left'
                 : 'angle-double-right'
+        },
+
+        canStartNextWave () {
+            return this.lastBugSpawned
+        },
+
+        noBugsLeftCountDownText () {
+            if (this.bugsLeft > 0) {
+                return ''
+            }
+            let seconds = Math.floor((200 - this.allBugsKilledCounter) / 20)
+            return ` ( ${seconds} )`
         }
     },
 
@@ -405,6 +418,16 @@ export default {
 
         gameSpeed () {
             this.ticker.fps = this.gameSpeed
+        },
+
+        bugsLeft () {
+            this.allBugsKilledCounter = 0
+        },
+
+        allBugsKilledCounter () {
+            if (this.lastBugSpawned && this.allBugsKilledCounter >= 200) {
+                this.nextWave()
+            }
         }
     },
 
@@ -591,6 +614,10 @@ export default {
         },
 
         update () {
+            if (this.bugs.length === 0) {
+                this.allBugsKilledCounter++
+            }
+
             this.bugs.forEach(bug => {
                 bug.position.add(bug.velocity)
 
