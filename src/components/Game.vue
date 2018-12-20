@@ -237,28 +237,17 @@ export default {
         TowerSelector
     },
 
+    props: {
+        map: {
+            type: Object,
+            required: true
+        }
+    },
+
     data () {
         return {
             tileSize: 100,
             divide: 2,
-            map: {
-                width: 10,
-                height: 11,
-                data: 'SFFFFFFFFF' +
-                      'WWWWWWWWWF' +
-                      'FFFFFFFFFF' +
-                      'FWWWWWWWWW' +
-                      'FFFFFFFFFF' +
-                      'WWWWWWWWWF' +
-                      'FFFFFFFFFF' +
-                      'FWWWWWWWWW' +
-                      'FFFFFFFFFF' +
-                      'WWWWWWWWWF' +
-                      'EFFFFFFFFF',
-                startOrientation: Math.PI / 2,
-                endOrientation: Math.PI / 2,
-                image: null
-            },
             spritesheet: null,
             bugs: [],
             towers: [],
@@ -794,7 +783,7 @@ export default {
                 (this.endPoint.y + 0.5) * this.tileSize
             )
             endSprite.anchor.set(0.5, 0.19)
-            endSprite.rotation = this.map.startOrientation
+            endSprite.rotation = this.map.endOrientation
             this.mapSprites.push(endSprite)
             this.startEndContainer.addChild(endSprite)
         },
