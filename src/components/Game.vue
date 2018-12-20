@@ -771,7 +771,7 @@ export default {
                 let tile = new Sprite(this.spritesheet.textures[textureName])
                 tile.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
                 tile.anchor.set(0.5)
-                tile.scale.set(0.5)
+                tile.scale.set(0.495)
                 this.mapContainer.addChild(tile)
                 return tile
             })
