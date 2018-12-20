@@ -65,7 +65,7 @@
         height: 100vh;
         font-family: Arial, sans-serif;
         font-size: 4vmin;
-        background: url(../assets/Background.svg) center center no-repeat fixed;
+        background: url(../assets/svg/Background.svg) center center no-repeat fixed;
         background-size: cover;
 
         * {
@@ -215,14 +215,19 @@
 <script>
 import AStar from '../AStar'
 import ResizeObserver from './ResizeObserver'
-import { autoDetectRenderer, Container, loaders, Sprite, Graphics } from 'pixi.js'
+import {
+    autoDetectRenderer, Container, loaders,
+    Sprite, Graphics, Spritesheet, extras
+} from 'pixi.js'
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
 import Vector from '../Vector'
-import BugAssets from '../assets/bugs'
-import TowerAssets from '../assets/tower'
 import TowerConfig from '../config/towers'
 import TowerSelector from './TowerSelector'
+import BugConfig from '../config/bugs'
+import AssetsImage from '../assets/assets.png'
+import AssetsConfig from '../assets/assets.json'
+const { AnimatedSprite } = extras
 
 export default {
     name: 'Game',
@@ -254,7 +259,7 @@ export default {
                 endOrientation: Math.PI / 2,
                 image: null
             },
-            resources: {},
+            spritesheet: null,
             bugs: [],
             towers: [],
             bullets: [],
@@ -570,8 +575,8 @@ export default {
         })
         this.stage.removeChildren()
         this.renderer.destroy()
-        for (let key in this.resources) {
-            this.resources[key].texture.destroy(true)
+        for (let key in this.spritesheet.textures) {
+            this.spritesheet.textures[key].destroy(true)
         }
 
         window.removeEventListener('keydown', this.onGlobalKeyDown)
@@ -738,13 +743,8 @@ export default {
         },
 
         loadAssets () {
-            for (let key in BugAssets) {
-                this.loader.add('bug:' + key, BugAssets[key])
-            }
-            for (let key in TowerAssets) {
-                this.loader.add('tower:' + key, TowerAssets[key])
-            }
-            this.loader.load(this.onLoad)
+            this.loader.add('assets', AssetsImage)
+            this.loader.load(this.onLoaderLoad)
         },
 
         updateRendererSize () {
@@ -770,9 +770,12 @@ export default {
             this.screen.height = height
         },
 
-        onLoad (loader, resources) {
-            this.resources = resources
+        onLoaderLoad (loader, resources) {
+            this.spritesheet = new Spritesheet(resources.assets.texture.baseTexture, AssetsConfig)
+            this.spritesheet.parse(this.onLoad)
+        },
 
+        onLoad () {
             this.nextWave()
         },
 
@@ -792,9 +795,16 @@ export default {
             )
         },
 
-        spawnBug (texture, health) {
-            let sprite = new Sprite(texture)
-            sprite.scale.set(0.2)
+        spawnBug (data, health) {
+            let sprite
+            if (data.animated) {
+                sprite = new AnimatedSprite(this.spritesheet.animations[data.texture])
+                sprite.animationSpeed = 0.1
+                sprite.play()
+            } else {
+                sprite = new Sprite(this.spritesheet.textures[data.texture])
+            }
+            sprite.scale.set(0.5)
             sprite.anchor.set(0.5)
             this.bugContainer.addChild(sprite)
 
@@ -836,10 +846,10 @@ export default {
                 return
             }
 
-            // random bug texture
-            let bugKeys = Object.keys(BugAssets)
+            // select random bug
+            let bugKeys = Object.keys(BugConfig)
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
-            let bugTexture = this.resources['bug:' + randomBugKey].texture
+            let bugData = BugConfig[randomBugKey]
 
             // update bug health
             let health = this.nextBugHealth
@@ -858,7 +868,7 @@ export default {
                 if (tickCounter === 20) {
                     tickCounter = 0
                     count--
-                    this.spawnBug(bugTexture, health)
+                    this.spawnBug(bugData, health)
                     if (count === 0) {
                         if (this.wave === wave) {
                             this.lastBugSpawned = true
@@ -946,16 +956,18 @@ export default {
             let position = tilePosition.clone().add(0.5).multiply(this.tileSize)
 
             // create baseSprite
-            let baseSprite = new Sprite(this.resources['tower:' + data.base[0]].texture)
-            baseSprite.scale.set(0.3)
+            let baseTexture = this.spritesheet.textures[data.base[0]]
+            let baseSprite = new Sprite(baseTexture)
+            baseSprite.scale.set(0.6)
             baseSprite.anchor.set(0.5)
             baseSprite.position.set(position.x, position.y)
             this.towerContainer.addChild(baseSprite)
 
             // create cannonSprite
-            let cannonSprite = new Sprite(this.resources['tower:' + data.cannon[0]].texture)
-            cannonSprite.scale.set(0.25)
-            cannonSprite.anchor.set(...data.anchor)
+            let cannonTexture = this.spritesheet.textures[data.cannon[0]]
+            let cannonSprite = new Sprite(cannonTexture)
+            cannonSprite.scale.set(0.4)
+            cannonSprite.anchor.set(0.5)
             cannonSprite.position.set(position.x, position.y)
             this.towerContainer.addChild(cannonSprite)
 
@@ -980,8 +992,9 @@ export default {
             let position = tower.position.clone()
 
             // create bulletSprite
-            let sprite = new Sprite(this.resources['tower:' + tower.bullet[0]].texture)
-            sprite.scale.set(0.1)
+            let texture = this.spritesheet.textures[tower.bullet[0]]
+            let sprite = new Sprite(texture)
+            sprite.scale.set(0.5)
             sprite.anchor.set(0.5)
             sprite.position.set(position.x, position.y)
             this.bulletContainer.addChild(sprite)
