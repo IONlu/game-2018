@@ -17,7 +17,7 @@ export default {
         bullet: [
             'canonammo'
         ],
-        price: 20,
+        price: 40,
         image: CanonImage,
         speed: {
             initial: 3
@@ -26,7 +26,7 @@ export default {
             initial: 2
         },
         damage: {
-            initial: 40
+            initial: 80
         }
     },
 
@@ -42,7 +42,7 @@ export default {
         bullet: [
             'ionammo'
         ],
-        price: 20,
+        price: 40,
         image: IonImage,
         speed: {
             initial: 6
@@ -67,7 +67,7 @@ export default {
         bullet: [
             'shieldammo'
         ],
-        price: 20,
+        price: 30,
         image: ShieldImage,
         speed: {
             initial: 1
@@ -92,7 +92,7 @@ export default {
         bullet: [
             'tankammo'
         ],
-        price: 20,
+        price: 10,
         image: TankImage,
         speed: {
             initial: 1
@@ -101,7 +101,7 @@ export default {
             initial: 3
         },
         damage: {
-            initial: 10
+            initial: 5
         }
     },
 
@@ -117,16 +117,16 @@ export default {
         bullet: [
             'tracerammo'
         ],
-        price: 20,
+        price: 30,
         image: TracerImage,
         speed: {
-            initial: 0.5
+            initial: 0.3
         },
         range: {
             initial: 4
         },
         damage: {
-            initial: 2
+            initial: 5
         }
     }
 }

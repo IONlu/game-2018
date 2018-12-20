@@ -10,6 +10,9 @@
                 :class="$style.image"
                 :style="getImageStyle(tower)"
             />
+            <div :class="$style.price">
+                <fa-icon icon="dollar-sign" /> {{ getPrice(tower) }}
+            </div>
         </div>
     </div>
 </template>
@@ -27,6 +30,7 @@
         border: 2px solid #333;
         background: #AAA;
         padding: 1vmin;
+        position: relative;
     }
 
     .image {
@@ -35,6 +39,13 @@
         background-size: 150%;
         background-repeat: no-repeat;
         background-position: center 20%;
+    }
+
+    .price {
+        position: absolute;
+        bottom: 0.5em;
+        right: 0.5em;;
+        font-size: 0.5em;
     }
 </style>
 
@@ -59,6 +70,10 @@ export default {
             return {
                 backgroundImage: `url(${this.towers[tower].image})`
             }
+        },
+
+        getPrice (tower) {
+            return this.towers[tower].price
         },
 
         onTowerClick (tower) {
