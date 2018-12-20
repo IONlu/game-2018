@@ -397,6 +397,16 @@ export default {
 
         showNextWaveButton () {
             return this.wave > 0 && this.canStartNextWave
+        },
+
+        selectedTower () {
+            if (!this.selectedTile) {
+                return null
+            }
+            return this.towers.find(tower => {
+                return this.selectedTile.x === tower.tilePosition.x &&
+                    this.selectedTile.y === tower.tilePosition.y
+            })
         }
     },
 
@@ -411,6 +421,23 @@ export default {
                 this.showPanel = true
             } else {
                 this.uiContainer.removeChild(this.selectedTileOverlay)
+            }
+        },
+
+        selectedTower () {
+            if (this.selectedTower) {
+                this.uiContainer.addChild(this.towerRangeGraphics)
+                this.towerRangeGraphics.clear()
+                this.towerRangeGraphics.lineStyle(0)
+                this.towerRangeGraphics.beginFill(0x003399, 0.5)
+                this.towerRangeGraphics.drawCircle(
+                    this.selectedTower.position.x,
+                    this.selectedTower.position.y,
+                    this.selectedTower.maxDistance * this.tileSize
+                )
+                this.towerRangeGraphics.endFill()
+            } else {
+                this.uiContainer.removeChild(this.towerRangeGraphics)
             }
         },
 
@@ -473,21 +500,21 @@ export default {
         this.healthBarContainer = new Container()
         this.viewport.addChild(this.healthBarContainer)
 
-        // create bullet container
-        this.bulletContainer = new Container()
-        this.viewport.addChild(this.bulletContainer)
-
         // create container for start and endpoint
         this.startEndContainer = new Container()
         this.viewport.addChild(this.startEndContainer)
 
-        // create container for towers
-        this.towerContainer = new Container()
-        this.viewport.addChild(this.towerContainer)
-
         // create container for the ui elements
         this.uiContainer = new Container()
         this.viewport.addChild(this.uiContainer)
+
+        // create bullet container
+        this.bulletContainer = new Container()
+        this.viewport.addChild(this.bulletContainer)
+
+        // create container for towers
+        this.towerContainer = new Container()
+        this.viewport.addChild(this.towerContainer)
 
         // create debug container
         this.debugContainer = new Container()
@@ -498,7 +525,7 @@ export default {
             this.ticker.start()
         }
 
-        // create selected tile overlay
+        // UI: create selected tile overlay
         this.selectedTileOverlay = new Graphics()
         this.selectedTileOverlay.lineStyle(5, 0x00FFFF)
         this.selectedTileOverlay.moveTo(0, 25)
@@ -513,6 +540,9 @@ export default {
         this.selectedTileOverlay.moveTo(25, 100)
         this.selectedTileOverlay.lineTo(0, 100)
         this.selectedTileOverlay.lineTo(0, 75)
+
+        // UI: tower range
+        this.towerRangeGraphics = new Graphics()
 
         // global keydown
         window.addEventListener('keydown', this.onGlobalKeyDown)
