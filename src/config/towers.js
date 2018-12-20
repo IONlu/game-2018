@@ -18,7 +18,16 @@ export default {
             'canonammo'
         ],
         price: 20,
-        image: CanonImage
+        image: CanonImage,
+        speed: {
+            initial: 3
+        },
+        range: {
+            initial: 2
+        },
+        damage: {
+            initial: 40
+        }
     },
 
     ion: {
@@ -34,7 +43,16 @@ export default {
             'ionammo'
         ],
         price: 20,
-        image: IonImage
+        image: IonImage,
+        speed: {
+            initial: 6
+        },
+        range: {
+            initial: 2
+        },
+        damage: {
+            initial: 100
+        }
     },
 
     shield: {
@@ -50,7 +68,16 @@ export default {
             'shieldammo'
         ],
         price: 20,
-        image: ShieldImage
+        image: ShieldImage,
+        speed: {
+            initial: 1
+        },
+        range: {
+            initial: 2
+        },
+        damage: {
+            initial: 1
+        }
     },
 
     tank: {
@@ -66,7 +93,16 @@ export default {
             'tankammo'
         ],
         price: 20,
-        image: TankImage
+        image: TankImage,
+        speed: {
+            initial: 1
+        },
+        range: {
+            initial: 3
+        },
+        damage: {
+            initial: 10
+        }
     },
 
     tracer: {
@@ -82,6 +118,15 @@ export default {
             'tracerammo'
         ],
         price: 20,
-        image: TracerImage
+        image: TracerImage,
+        speed: {
+            initial: 0.5
+        },
+        range: {
+            initial: 4
+        },
+        damage: {
+            initial: 2
+        }
     }
 }

@@ -8,12 +8,25 @@
         </div>
         <table :class="$style.table">
             <tr>
-                <td>Level</td>
-                <td>1</td>
+                <td>Damage</td>
+                <td>{{ tower.damage }}</td>
+                <td>
+                    <button>Upgrade</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Speed</td>
+                <td>{{ tower.speed }}</td>
+                <td>
+                    <button>Upgrade</button>
+                </td>
             </tr>
             <tr>
                 <td>Range</td>
-                <td>{{ tower.maxDistance }}</td>
+                <td>{{ tower.range }}</td>
+                <td>
+                    <button>Upgrade</button>
+                </td>
             </tr>
         </table>
     </div>
@@ -37,7 +50,12 @@
     }
 
     .table {
-        width: 100%;
+        margin: 0 auto;
+        font-size: 0.5em;
+
+        td {
+            padding: 0.2em 0.5em;
+        }
     }
 </style>
 

@@ -444,7 +444,7 @@ export default {
                 this.towerRangeGraphics.drawCircle(
                     this.selectedTower.position.x,
                     this.selectedTower.position.y,
-                    this.selectedTower.maxDistance * this.tileSize
+                    this.getTowerRangeInPixels(this.selectedTower)
                 )
                 this.towerRangeGraphics.endFill()
             } else {
@@ -724,7 +724,7 @@ export default {
                     })
                 }
                 tower.bulletTimeoutCounter++
-                if (tower.bulletTimeoutCounter === 20) {
+                if (tower.bulletTimeoutCounter >= this.getTowerSpeedInTicks(tower)) {
                     tower.bulletTimeoutCounter = 0
                     this.shoot(tower)
                 }
@@ -737,8 +737,8 @@ export default {
                     bullet.position.add(bullet.velocity)
                     let targetVector = bullet.targetBug.position.clone().substract(bullet.position)
                     if (targetVector.length() <= 30) {
-                        bullet.targetBug.health -= 10
-                        if (bullet.targetBug.health <= 10) {
+                        bullet.targetBug.health -= this.getTowerBugDamage(bullet.tower, bullet.targetBug)
+                        if (bullet.targetBug.health <= 0) {
                             bullet.targetBug.removed = true
                             this.money += 2
                         }
@@ -755,10 +755,22 @@ export default {
             this.removeBugs()
         },
 
+        getTowerRangeInPixels (tower) {
+            return tower.range * tower.data.range.initial * this.tileSize
+        },
+
+        getTowerBugDamage (tower, bug) {
+            return tower.damage * tower.data.damage.initial
+        },
+
+        getTowerSpeedInTicks (tower) {
+            return 20 * tower.speed * tower.data.speed.initial
+        },
+
         towerCanReachBug (tower, bug) {
             return new Vector(bug.position.x, bug.position.y)
                 .substract(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
-                .length() <= (tower.maxDistance * this.tileSize)
+                .length() <= this.getTowerRangeInPixels(tower)
         },
 
         loadAssets () {
@@ -1040,7 +1052,9 @@ export default {
                 position,
                 baseSprite,
                 cannonSprite,
-                maxDistance: 2,
+                range: 1,
+                speed: 1,
+                damage: 1,
                 targetBug: null,
                 debugGraphics,
                 bullet: data.bullet,
@@ -1061,6 +1075,7 @@ export default {
             this.bulletContainer.addChild(sprite)
 
             this.bullets.push({
+                tower,
                 position,
                 targetBug: tower.targetBug,
                 sprite,
