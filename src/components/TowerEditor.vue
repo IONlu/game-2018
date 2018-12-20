@@ -9,21 +9,30 @@
         <table :class="$style.table">
             <tr>
                 <td>Damage</td>
-                <td>{{ tower.damage }}</td>
+                <td>
+                    {{ damageLevel }}
+                    <span :class="$style.small">({{ damage }})</span>
+                </td>
                 <td>
                     <button>Upgrade</button>
                 </td>
             </tr>
             <tr>
                 <td>Speed</td>
-                <td>{{ tower.speed }}</td>
+                <td>
+                    {{ speedLevel }}
+                    <span :class="$style.small">({{ speed }}s)</span>
+                </td>
                 <td>
                     <button>Upgrade</button>
                 </td>
             </tr>
             <tr>
                 <td>Range</td>
-                <td>{{ tower.range }}</td>
+                <td>
+                    {{ rangeLevel }}
+                    <span :class="$style.small">({{ range }})</span>
+                </td>
                 <td>
                     <button>Upgrade</button>
                 </td>
@@ -57,9 +66,17 @@
             padding: 0.2em 0.5em;
         }
     }
+
+    .small {
+        font-style: italic;
+        opacity: 0.5;
+        font-size: 0.8em;
+    }
 </style>
 
 <script>
+import * as TowerHelpers from '../config/towers'
+
 export default {
     props: {
         tower: {
@@ -73,6 +90,30 @@ export default {
             return {
                 backgroundImage: `url(${this.tower.data.image})`
             }
+        },
+
+        rangeLevel () {
+            return this.tower.range
+        },
+
+        speedLevel () {
+            return this.tower.speed
+        },
+
+        damageLevel () {
+            return this.tower.damage
+        },
+
+        range () {
+            return TowerHelpers.getRange(this.tower)
+        },
+
+        speed () {
+            return TowerHelpers.getSpeed(this.tower)
+        },
+
+        damage () {
+            return TowerHelpers.getBugDamage(this.tower)
         }
     }
 }

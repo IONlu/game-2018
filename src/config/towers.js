@@ -130,3 +130,15 @@ export default {
         }
     }
 }
+
+export const getRange = tower => {
+    return tower.range * tower.data.range.initial
+}
+
+export const getBugDamage = (tower, bug) => {
+    return tower.damage * tower.data.damage.initial
+}
+
+export const getSpeed = tower => {
+    return tower.speed * tower.data.speed.initial
+}

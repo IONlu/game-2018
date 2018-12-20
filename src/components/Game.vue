@@ -231,7 +231,7 @@ import {
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
 import Vector from '../Vector'
-import TowerConfig from '../config/towers'
+import TowerConfig, * as TowerHelpers from '../config/towers'
 import TowerSelector from './TowerSelector'
 import TowerEditor from './TowerEditor'
 import BugConfig from '../config/bugs'
@@ -444,7 +444,7 @@ export default {
                 this.towerRangeGraphics.drawCircle(
                     this.selectedTower.position.x,
                     this.selectedTower.position.y,
-                    this.getTowerRangeInPixels(this.selectedTower)
+                    TowerHelpers.getRange(this.selectedTower) * this.tileSize
                 )
                 this.towerRangeGraphics.endFill()
             } else {
@@ -724,7 +724,7 @@ export default {
                     })
                 }
                 tower.bulletTimeoutCounter++
-                if (tower.bulletTimeoutCounter >= this.getTowerSpeedInTicks(tower)) {
+                if (tower.bulletTimeoutCounter >= (TowerHelpers.getSpeed(tower) * 20)) {
                     tower.bulletTimeoutCounter = 0
                     this.shoot(tower)
                 }
@@ -737,7 +737,7 @@ export default {
                     bullet.position.add(bullet.velocity)
                     let targetVector = bullet.targetBug.position.clone().substract(bullet.position)
                     if (targetVector.length() <= 30) {
-                        bullet.targetBug.health -= this.getTowerBugDamage(bullet.tower, bullet.targetBug)
+                        bullet.targetBug.health -= TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
                         if (bullet.targetBug.health <= 0) {
                             bullet.targetBug.removed = true
                             this.money += 2
@@ -755,22 +755,10 @@ export default {
             this.removeBugs()
         },
 
-        getTowerRangeInPixels (tower) {
-            return tower.range * tower.data.range.initial * this.tileSize
-        },
-
-        getTowerBugDamage (tower, bug) {
-            return tower.damage * tower.data.damage.initial
-        },
-
-        getTowerSpeedInTicks (tower) {
-            return 20 * tower.speed * tower.data.speed.initial
-        },
-
         towerCanReachBug (tower, bug) {
             return new Vector(bug.position.x, bug.position.y)
                 .substract(tower.cannonSprite.position.x, tower.cannonSprite.position.y)
-                .length() <= this.getTowerRangeInPixels(tower)
+                .length() <= TowerHelpers.getRange(tower) * this.tileSize
         },
 
         loadAssets () {
