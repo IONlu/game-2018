@@ -480,10 +480,6 @@ export default {
         this.bugContainer = new Container()
         this.viewport.addChild(this.bugContainer)
 
-        // create container for towers
-        this.towerContainer = new Container()
-        this.viewport.addChild(this.towerContainer)
-
         // create healthbar container
         this.healthBarContainer = new Container()
         this.viewport.addChild(this.healthBarContainer)
@@ -491,6 +487,14 @@ export default {
         // create bullet container
         this.bulletContainer = new Container()
         this.viewport.addChild(this.bulletContainer)
+
+        // create container for start and endpoint
+        this.startEndContainer = new Container()
+        this.viewport.addChild(this.startEndContainer)
+
+        // create container for towers
+        this.towerContainer = new Container()
+        this.viewport.addChild(this.towerContainer)
 
         // create container for the ui elements
         this.uiContainer = new Container()
@@ -504,31 +508,6 @@ export default {
         if (!document.hidden) {
             this.ticker.start()
         }
-
-        // draw tiles
-        ;([ ...this.map.data ]).map((type, index) => {
-            let color
-            switch (type) {
-                case 'F':
-                    color = 0x999999
-                    break
-                case 'S':
-                    color = 0x00FF00
-                    break
-                case 'E':
-                    color = 0xFF0000
-                    break
-                default:
-                    return
-            }
-            let { x, y } = this.index2Point(index)
-            let tile = new Graphics()
-            tile.beginFill(color, 0.5)
-            tile.drawRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize)
-            tile.endFill()
-            this.mapContainer.addChild(tile)
-            return tile
-        })
 
         // create selected tile overlay
         this.selectedTileOverlay = new Graphics()
@@ -776,7 +755,48 @@ export default {
         },
 
         onLoad () {
+            this.drawMap()
             this.nextWave()
+        },
+
+        drawMap () {
+            let tileTextureNames = [ 'plate1', 'plate2' ]
+            this.mapSprites = ([ ...this.map.data ]).map((type, index) => {
+                if (type !== 'F') {
+                    return
+                }
+                let { x, y } = this.index2Point(index)
+
+                let textureName = tileTextureNames[Math.floor(Math.random() * 2)]
+                let tile = new Sprite(this.spritesheet.textures[textureName])
+                tile.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
+                tile.anchor.set(0.5)
+                tile.scale.set(0.5)
+                this.mapContainer.addChild(tile)
+                return tile
+            })
+
+            // start
+            let startSprite = new Sprite(this.spritesheet.textures.cable)
+            startSprite.position.set(
+                (this.startPoint.x + 0.5) * this.tileSize,
+                (this.startPoint.y + 0.5) * this.tileSize
+            )
+            startSprite.anchor.set(0.5, 0.19)
+            startSprite.rotation = this.map.startOrientation
+            this.mapSprites.push(startSprite)
+            this.startEndContainer.addChild(startSprite)
+
+            // end
+            let endSprite = new Sprite(this.spritesheet.textures.hd)
+            endSprite.position.set(
+                (this.endPoint.x + 0.5) * this.tileSize,
+                (this.endPoint.y + 0.5) * this.tileSize
+            )
+            endSprite.anchor.set(0.5, 0.19)
+            endSprite.rotation = this.map.startOrientation
+            this.mapSprites.push(endSprite)
+            this.startEndContainer.addChild(endSprite)
         },
 
         moveBugToStart (bug) {
