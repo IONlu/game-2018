@@ -426,7 +426,7 @@ export default {
 
         selectedTower () {
             if (this.selectedTower) {
-                this.uiContainer.addChild(this.towerRangeGraphics)
+                this.uiContainer.addChildAt(this.towerRangeGraphics, 0)
                 this.towerRangeGraphics.clear()
                 this.towerRangeGraphics.lineStyle(0)
                 this.towerRangeGraphics.beginFill(0x003399, 0.5)
@@ -1029,7 +1029,7 @@ export default {
                 position,
                 baseSprite,
                 cannonSprite,
-                maxDistance: 3,
+                maxDistance: 2,
                 targetBug: null,
                 debugGraphics,
                 bullet: data.bullet,
