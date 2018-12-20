@@ -1,7 +1,13 @@
+import CanonImage from '../assets/svg/canon.svg'
+import IonImage from '../assets/svg/ion.svg'
+import ShieldImage from '../assets/svg/shield.svg'
+import TankImage from '../assets/svg/tank.svg'
+import TracerImage from '../assets/svg/tracer.svg'
+
 export default {
     cannon: {
         cannon: [
-            'cannon'
+            'canon'
         ],
         base: [
             'base1',
@@ -9,10 +15,10 @@ export default {
             'base3'
         ],
         bullet: [
-            'cannon-ammo'
+            'canonammo'
         ],
-        anchor: [ 0.5, 0.7 ],
-        price: 20
+        price: 20,
+        image: CanonImage
     },
 
     ion: {
@@ -25,10 +31,10 @@ export default {
             'base3'
         ],
         bullet: [
-            'ion-ammo'
+            'ionammo'
         ],
-        anchor: [ 0.5 ],
-        price: 20
+        price: 20,
+        image: IonImage
     },
 
     shield: {
@@ -41,12 +47,10 @@ export default {
             'base3'
         ],
         bullet: [
-            'shield-ammo',
-            'shield-ammo2',
-            'shield-ammo3'
+            'shieldammo'
         ],
-        anchor: [ 0.5 ],
-        price: 20
+        price: 20,
+        image: ShieldImage
     },
 
     tank: {
@@ -59,17 +63,15 @@ export default {
             'base3'
         ],
         bullet: [
-            'tank-ammo'
+            'tankammo'
         ],
-        anchor: [ 0.5, 0.7 ],
-        price: 20
+        price: 20,
+        image: TankImage
     },
 
     tracer: {
         cannon: [
-            'tracer',
-            'tracer2',
-            'tracer3'
+            'tracer'
         ],
         base: [
             'base1',
@@ -77,9 +79,9 @@ export default {
             'base3'
         ],
         bullet: [
-            'tracer-ammo'
+            'tracerammo'
         ],
-        anchor: [ 0.5 ],
-        price: 20
+        price: 20,
+        image: TracerImage
     }
 }

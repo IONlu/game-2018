@@ -1,5 +1,7 @@
 <template>
-    <game />
+    <game
+        :map="map"
+    />
 </template>
 
 <style>
@@ -25,6 +27,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import maps from './config/maps'
+
 library.add(faHeart)
 library.add(faAngleDoubleRight)
 library.add(faAngleDoubleLeft)
@@ -42,6 +46,12 @@ export default {
 
     components: {
         Game
+    },
+
+    data () {
+        return {
+            map: maps[Math.floor(Math.random() * maps.length)]
+        }
     }
 }
 </script>

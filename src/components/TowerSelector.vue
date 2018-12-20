@@ -32,14 +32,13 @@
     .image {
         width: 100%;
         padding-top: 100%;
-        background-size: contain;
+        background-size: 150%;
         background-repeat: no-repeat;
-        background-position: center center;
+        background-position: center 20%;
     }
 </style>
 
 <script>
-import TowerAssets from '../assets/tower'
 import TowerConfig from '../config/towers'
 
 export default {
@@ -56,13 +55,9 @@ export default {
     },
 
     methods: {
-        getTowerImage (tower) {
-            return TowerAssets[this.towers[tower].cannon[0]]
-        },
-
         getImageStyle (tower) {
             return {
-                backgroundImage: `url(${this.getTowerImage(tower)})`
+                backgroundImage: `url(${this.towers[tower].image})`
             }
         },
 

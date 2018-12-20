@@ -31,10 +31,18 @@
                     <fa-icon :icon="togglePanelIcon" />
                 </div>
                 <div :class="$style.panelContent">
-                    <tower-selector
-                        :class="$style.towerSelector"
-                        @select="onBuildTowerClick"
-                    />
+                    <template v-if="selectedTile">
+                        <tower-editor
+                            v-if="selectedTower"
+                            :class="$style.towerEditor"
+                            :tower="selectedTower"
+                        />
+                        <tower-selector
+                            v-else
+                            :class="$style.towerSelector"
+                            @select="onBuildTowerClick"
+                        />
+                    </template>
                 </div>
             </div>
             <resize-observer
@@ -65,7 +73,7 @@
         height: 100vh;
         font-family: Arial, sans-serif;
         font-size: 4vmin;
-        background: url(../assets/Background.svg) center center no-repeat fixed;
+        background: url(../assets/svg/Background.svg) center center no-repeat fixed;
         background-size: cover;
 
         * {
@@ -204,10 +212,11 @@
     }
 
     .portrait .nextWave {
-        top: calc(5vmin + 1em);
+        top: calc(5vmin + 2vmin);
     }
 
-    .towerSelector {
+    .towerSelector,
+    .towerEditor {
         width: 100%;
     }
 </style>
@@ -215,46 +224,42 @@
 <script>
 import AStar from '../AStar'
 import ResizeObserver from './ResizeObserver'
-import { autoDetectRenderer, Container, loaders, Sprite, Graphics } from 'pixi.js'
+import {
+    autoDetectRenderer, Container, loaders,
+    Sprite, Graphics, Spritesheet, extras
+} from 'pixi.js'
 import Viewport from 'pixi-viewport'
 import Ticker from '../Ticker'
 import Vector from '../Vector'
-import BugAssets from '../assets/bugs'
-import TowerAssets from '../assets/tower'
 import TowerConfig from '../config/towers'
 import TowerSelector from './TowerSelector'
+import TowerEditor from './TowerEditor'
+import BugConfig from '../config/bugs'
+import AssetsImage from '../assets/assets.png'
+import AssetsConfig from '../assets/assets.json'
+const { AnimatedSprite } = extras
 
 export default {
     name: 'Game',
 
     components: {
         ResizeObserver,
-        TowerSelector
+        TowerSelector,
+        TowerEditor
+    },
+
+    props: {
+        map: {
+            type: Object,
+            required: true
+        }
     },
 
     data () {
         return {
             tileSize: 100,
             divide: 2,
-            map: {
-                width: 10,
-                height: 11,
-                data: 'SFFFFFFFFF' +
-                      'WWWWWWWWWF' +
-                      'FFFFFFFFFF' +
-                      'FWWWWWWWWW' +
-                      'FFFFFFFFFF' +
-                      'WWWWWWWWWF' +
-                      'FFFFFFFFFF' +
-                      'FWWWWWWWWW' +
-                      'FFFFFFFFFF' +
-                      'WWWWWWWWWF' +
-                      'EFFFFFFFFF',
-                startOrientation: Math.PI / 2,
-                endOrientation: Math.PI / 2,
-                image: null
-            },
-            resources: {},
+            spritesheet: null,
             bugs: [],
             towers: [],
             bullets: [],
@@ -275,7 +280,7 @@ export default {
             nextWaveTimeout: 200,
             nextBugHealth: 100,
             bugHealthIncrement: 20,
-            bugHealthIncrementIncrement: 5
+            bugHealthIncrementIncrement: 7
         }
     },
 
@@ -403,6 +408,16 @@ export default {
 
         showNextWaveButton () {
             return this.wave > 0 && this.canStartNextWave
+        },
+
+        selectedTower () {
+            if (!this.selectedTile) {
+                return null
+            }
+            return this.towers.find(tower => {
+                return this.selectedTile.x === tower.tilePosition.x &&
+                    this.selectedTile.y === tower.tilePosition.y
+            })
         }
     },
 
@@ -417,6 +432,23 @@ export default {
                 this.showPanel = true
             } else {
                 this.uiContainer.removeChild(this.selectedTileOverlay)
+            }
+        },
+
+        selectedTower () {
+            if (this.selectedTower) {
+                this.uiContainer.addChildAt(this.towerRangeGraphics, 0)
+                this.towerRangeGraphics.clear()
+                this.towerRangeGraphics.lineStyle(0)
+                this.towerRangeGraphics.beginFill(0x003399, 0.5)
+                this.towerRangeGraphics.drawCircle(
+                    this.selectedTower.position.x,
+                    this.selectedTower.position.y,
+                    this.selectedTower.maxDistance * this.tileSize
+                )
+                this.towerRangeGraphics.endFill()
+            } else {
+                this.uiContainer.removeChild(this.towerRangeGraphics)
             }
         },
 
@@ -475,21 +507,25 @@ export default {
         this.bugContainer = new Container()
         this.viewport.addChild(this.bugContainer)
 
-        // create container for towers
-        this.towerContainer = new Container()
-        this.viewport.addChild(this.towerContainer)
-
         // create healthbar container
         this.healthBarContainer = new Container()
         this.viewport.addChild(this.healthBarContainer)
+
+        // create container for start and endpoint
+        this.startEndContainer = new Container()
+        this.viewport.addChild(this.startEndContainer)
+
+        // create container for the ui elements
+        this.uiContainer = new Container()
+        this.viewport.addChild(this.uiContainer)
 
         // create bullet container
         this.bulletContainer = new Container()
         this.viewport.addChild(this.bulletContainer)
 
-        // create container for the ui elements
-        this.uiContainer = new Container()
-        this.viewport.addChild(this.uiContainer)
+        // create container for towers
+        this.towerContainer = new Container()
+        this.viewport.addChild(this.towerContainer)
 
         // create debug container
         this.debugContainer = new Container()
@@ -500,36 +536,24 @@ export default {
             this.ticker.start()
         }
 
-        // draw tiles
-        ;([ ...this.map.data ]).map((type, index) => {
-            let color
-            switch (type) {
-                case 'F':
-                    color = 0x999999
-                    break
-                case 'S':
-                    color = 0x00FF00
-                    break
-                case 'E':
-                    color = 0xFF0000
-                    break
-                default:
-                    return
-            }
-            let { x, y } = this.index2Point(index)
-            let tile = new Graphics()
-            tile.beginFill(color, 0.5)
-            tile.drawRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize)
-            tile.endFill()
-            this.mapContainer.addChild(tile)
-            return tile
-        })
-
-        // create selected tile overlay
+        // UI: create selected tile overlay
         this.selectedTileOverlay = new Graphics()
-        this.selectedTileOverlay.lineStyle(5, 0x3333FF, 0.7, 1)
-        this.selectedTileOverlay.beginFill(0x3333FF, 0.5)
-        this.selectedTileOverlay.drawRect(0, 0, this.tileSize, this.tileSize)
+        this.selectedTileOverlay.lineStyle(5, 0x00FFFF)
+        this.selectedTileOverlay.moveTo(0, 25)
+        this.selectedTileOverlay.lineTo(0, 0)
+        this.selectedTileOverlay.lineTo(25, 0)
+        this.selectedTileOverlay.moveTo(75, 0)
+        this.selectedTileOverlay.lineTo(100, 0)
+        this.selectedTileOverlay.lineTo(100, 25)
+        this.selectedTileOverlay.moveTo(100, 75)
+        this.selectedTileOverlay.lineTo(100, 100)
+        this.selectedTileOverlay.lineTo(75, 100)
+        this.selectedTileOverlay.moveTo(25, 100)
+        this.selectedTileOverlay.lineTo(0, 100)
+        this.selectedTileOverlay.lineTo(0, 75)
+
+        // UI: tower range
+        this.towerRangeGraphics = new Graphics()
 
         // global keydown
         window.addEventListener('keydown', this.onGlobalKeyDown)
@@ -570,8 +594,8 @@ export default {
         })
         this.stage.removeChildren()
         this.renderer.destroy()
-        for (let key in this.resources) {
-            this.resources[key].texture.destroy(true)
+        for (let key in this.spritesheet.textures) {
+            this.spritesheet.textures[key].destroy(true)
         }
 
         window.removeEventListener('keydown', this.onGlobalKeyDown)
@@ -738,13 +762,8 @@ export default {
         },
 
         loadAssets () {
-            for (let key in BugAssets) {
-                this.loader.add('bug:' + key, BugAssets[key])
-            }
-            for (let key in TowerAssets) {
-                this.loader.add('tower:' + key, TowerAssets[key])
-            }
-            this.loader.load(this.onLoad)
+            this.loader.add('assets', AssetsImage)
+            this.loader.load(this.onLoaderLoad)
         },
 
         updateRendererSize () {
@@ -770,10 +789,54 @@ export default {
             this.screen.height = height
         },
 
-        onLoad (loader, resources) {
-            this.resources = resources
+        onLoaderLoad (loader, resources) {
+            this.spritesheet = new Spritesheet(resources.assets.texture.baseTexture, AssetsConfig)
+            this.spritesheet.parse(this.onLoad)
+        },
 
+        onLoad () {
+            this.drawMap()
             this.nextWave()
+        },
+
+        drawMap () {
+            let tileTextureNames = [ 'plate1', 'plate2' ]
+            this.mapSprites = ([ ...this.map.data ]).map((type, index) => {
+                if (type !== 'F') {
+                    return
+                }
+                let { x, y } = this.index2Point(index)
+
+                let textureName = tileTextureNames[Math.floor(Math.random() * 2)]
+                let tile = new Sprite(this.spritesheet.textures[textureName])
+                tile.position.set((x + 0.5) * this.tileSize, (y + 0.5) * this.tileSize)
+                tile.anchor.set(0.5)
+                tile.scale.set(0.495)
+                this.mapContainer.addChild(tile)
+                return tile
+            })
+
+            // start
+            let startSprite = new Sprite(this.spritesheet.textures.cable)
+            startSprite.position.set(
+                (this.startPoint.x + 0.5) * this.tileSize,
+                (this.startPoint.y + 0.5) * this.tileSize
+            )
+            startSprite.anchor.set(0.5, 0.19)
+            startSprite.rotation = this.map.startOrientation
+            this.mapSprites.push(startSprite)
+            this.startEndContainer.addChild(startSprite)
+
+            // end
+            let endSprite = new Sprite(this.spritesheet.textures.hd)
+            endSprite.position.set(
+                (this.endPoint.x + 0.5) * this.tileSize,
+                (this.endPoint.y + 0.5) * this.tileSize
+            )
+            endSprite.anchor.set(0.5, 0.19)
+            endSprite.rotation = this.map.endOrientation
+            this.mapSprites.push(endSprite)
+            this.startEndContainer.addChild(endSprite)
         },
 
         moveBugToStart (bug) {
@@ -792,9 +855,16 @@ export default {
             )
         },
 
-        spawnBug (texture, health) {
-            let sprite = new Sprite(texture)
-            sprite.scale.set(0.2)
+        spawnBug (data, health) {
+            let sprite
+            if (data.animated) {
+                sprite = new AnimatedSprite(this.spritesheet.animations[data.texture])
+                sprite.animationSpeed = 0.1
+                sprite.play()
+            } else {
+                sprite = new Sprite(this.spritesheet.textures[data.texture])
+            }
+            sprite.scale.set(0.5)
             sprite.anchor.set(0.5)
             this.bugContainer.addChild(sprite)
 
@@ -836,10 +906,10 @@ export default {
                 return
             }
 
-            // random bug texture
-            let bugKeys = Object.keys(BugAssets)
+            // select random bug
+            let bugKeys = Object.keys(BugConfig)
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
-            let bugTexture = this.resources['bug:' + randomBugKey].texture
+            let bugData = BugConfig[randomBugKey]
 
             // update bug health
             let health = this.nextBugHealth
@@ -858,7 +928,7 @@ export default {
                 if (tickCounter === 20) {
                     tickCounter = 0
                     count--
-                    this.spawnBug(bugTexture, health)
+                    this.spawnBug(bugData, health)
                     if (count === 0) {
                         if (this.wave === wave) {
                             this.lastBugSpawned = true
@@ -875,15 +945,15 @@ export default {
         },
 
         onClick (evt) {
-            let tile = {
-                x: Math.floor(evt.world.x / this.tileSize),
-                y: Math.floor(evt.world.y / this.tileSize)
-            }
-            if (this.isBlocked(tile.x, tile.y)) {
-                this.selectedTile = {
-                    x: Math.floor(evt.world.x / this.tileSize),
-                    y: Math.floor(evt.world.y / this.tileSize)
-                }
+            this.selectTile(
+                Math.floor(evt.world.x / this.tileSize),
+                Math.floor(evt.world.y / this.tileSize)
+            )
+        },
+
+        selectTile (x, y) {
+            if (this.isBlocked(x, y)) {
+                this.selectedTile = { x, y }
             }
         },
 
@@ -946,16 +1016,18 @@ export default {
             let position = tilePosition.clone().add(0.5).multiply(this.tileSize)
 
             // create baseSprite
-            let baseSprite = new Sprite(this.resources['tower:' + data.base[0]].texture)
-            baseSprite.scale.set(0.3)
+            let baseTexture = this.spritesheet.textures[data.base[0]]
+            let baseSprite = new Sprite(baseTexture)
+            baseSprite.scale.set(0.6)
             baseSprite.anchor.set(0.5)
             baseSprite.position.set(position.x, position.y)
             this.towerContainer.addChild(baseSprite)
 
             // create cannonSprite
-            let cannonSprite = new Sprite(this.resources['tower:' + data.cannon[0]].texture)
-            cannonSprite.scale.set(0.25)
-            cannonSprite.anchor.set(...data.anchor)
+            let cannonTexture = this.spritesheet.textures[data.cannon[0]]
+            let cannonSprite = new Sprite(cannonTexture)
+            cannonSprite.scale.set(0.4)
+            cannonSprite.anchor.set(0.5)
             cannonSprite.position.set(position.x, position.y)
             this.towerContainer.addChild(cannonSprite)
 
@@ -968,11 +1040,12 @@ export default {
                 position,
                 baseSprite,
                 cannonSprite,
-                maxDistance: 3,
+                maxDistance: 2,
                 targetBug: null,
                 debugGraphics,
                 bullet: data.bullet,
-                bulletTimeoutCounter: 0
+                bulletTimeoutCounter: 0,
+                data
             })
         },
 
@@ -980,8 +1053,9 @@ export default {
             let position = tower.position.clone()
 
             // create bulletSprite
-            let sprite = new Sprite(this.resources['tower:' + tower.bullet[0]].texture)
-            sprite.scale.set(0.1)
+            let texture = this.spritesheet.textures[tower.bullet[0]]
+            let sprite = new Sprite(texture)
+            sprite.scale.set(0.5)
             sprite.anchor.set(0.5)
             sprite.position.set(position.x, position.y)
             this.bulletContainer.addChild(sprite)
@@ -1005,6 +1079,7 @@ export default {
             if (evt.key === 'd' && evt.altKey) {
                 evt.preventDefault()
                 this.debug = !this.debug
+                return
             }
 
             if (evt.key === 's' && evt.altKey) {
@@ -1013,6 +1088,7 @@ export default {
                 if (this.gameSpeed > 60) {
                     this.gameSpeed = 20
                 }
+                return
             }
 
             if (evt.key.match(/^[0-9]+$/)) {
@@ -1020,6 +1096,35 @@ export default {
                 let towerKeys = Object.keys(TowerConfig)
                 if (towerIndex < towerKeys.length) {
                     this.onBuildTowerClick(towerKeys[towerIndex])
+                }
+                return
+            }
+
+            if (evt.key === 'ArrowUp') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x, this.selectedTile.y - 1)
+                }
+            }
+
+            if (evt.key === 'ArrowRight') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x + 1, this.selectedTile.y)
+                }
+            }
+
+            if (evt.key === 'ArrowDown') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x, this.selectedTile.y + 1)
+                }
+            }
+
+            if (evt.key === 'ArrowLeft') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x - 1, this.selectedTile.y)
                 }
             }
         },
