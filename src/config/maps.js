@@ -57,36 +57,26 @@ export default [
         image: null
     },
     {
-        width: 13,
-        height: 27,
-        data: 'WFFFFFFFFFFFF' +
-            'WFWWWWWWWWWWF' +
-            'WFWFFFFFFFFWF' +
-            'WFWFWWWWWWFWF' +
-            'FFWFFFWFFFFWF' +
-            'FWWWWFWFWWWWF' +
-            'FWFFFFWFWWFFF' +
-            'FWFWWWWFWWFWW' +
-            'FWFWFFFFWWFFF' +
-            'FWFWFWWWWWWWF' +
-            'FWFWFWFFFFFWF' +
-            'FWFWFWFWFWFWF' +
-            'FWFWFWFWSWFWF' +
-            'FWFWFWFWWWFWF' +
-            'FWFWFWFWWWFWF' +
-            'FWFWFWFWWWFWF' +
-            'FWFWFWFWWWFWF' +
-            'FWFWFWFWEWFWF' +
-            'FWFWFWFWFWFWF' +
-            'FWFWFWFWFWFWF' +
-            'FWFWFWFWFWFWF' +
-            'FWFWFWFWFWFWF' +
-            'FWFWFWFWFWFWF' +
-            'FWFWFWFWFWFFF' +
-            'FFFWFFFWFWWWW' +
-            'WFWWWWWWFWWWW' +
-            'WFFFFFFFFWWWW',
-        startOrientation: 0,
+        width: 18,
+        height: 17,
+        data: 'WWWWWWWWWWWWWWWWWW' +
+            'WWWWWWWWWWWWWWWWWW' +
+            'FFFFFFFFFFFWWEWWWW' +
+            'FWWWWWWWWWFWWFWWWW' +
+            'FWWWWWWWWWFWWFWWWW' +
+            'FWWFFFFFFWFWWFWWWW' +
+            'FWWFWWWWFWFWWFWWWW' +
+            'FWWFWFFFFWFFFFWWWW' +
+            'FWWFWFWWWWWWWWWWWW' +
+            'FWWFWFWWFFFFFFFSWW' +
+            'FWWFWFWWFWWWWWWWWW' +
+            'FWWFWFFFFWFFFFWWWW' +
+            'FWWFWWWWWWFWWFWWWW' +
+            'FWWFFFFFFFFWWFWWWW' +
+            'FWWWWWWWWWWWWFWWWW' +
+            'FWWWWWWWWWWWWFWWWW' +
+            'FFFFFFFFFFFFFFWWWW',
+        startOrientation: -Math.PI / 2,
         endOrientation: Math.PI,
         image: null
     }
