@@ -500,9 +500,19 @@ export default {
 
         // create selected tile overlay
         this.selectedTileOverlay = new Graphics()
-        this.selectedTileOverlay.lineStyle(5, 0x3333FF, 0.7, 1)
-        this.selectedTileOverlay.beginFill(0x3333FF, 0.5)
-        this.selectedTileOverlay.drawRect(0, 0, this.tileSize, this.tileSize)
+        this.selectedTileOverlay.lineStyle(5, 0x00FFFF)
+        this.selectedTileOverlay.moveTo(0, 25)
+        this.selectedTileOverlay.lineTo(0, 0)
+        this.selectedTileOverlay.lineTo(25, 0)
+        this.selectedTileOverlay.moveTo(75, 0)
+        this.selectedTileOverlay.lineTo(100, 0)
+        this.selectedTileOverlay.lineTo(100, 25)
+        this.selectedTileOverlay.moveTo(100, 75)
+        this.selectedTileOverlay.lineTo(100, 100)
+        this.selectedTileOverlay.lineTo(75, 100)
+        this.selectedTileOverlay.moveTo(25, 100)
+        this.selectedTileOverlay.lineTo(0, 100)
+        this.selectedTileOverlay.lineTo(0, 75)
 
         // global keydown
         window.addEventListener('keydown', this.onGlobalKeyDown)
@@ -894,15 +904,15 @@ export default {
         },
 
         onClick (evt) {
-            let tile = {
-                x: Math.floor(evt.world.x / this.tileSize),
-                y: Math.floor(evt.world.y / this.tileSize)
-            }
-            if (this.isBlocked(tile.x, tile.y)) {
-                this.selectedTile = {
-                    x: Math.floor(evt.world.x / this.tileSize),
-                    y: Math.floor(evt.world.y / this.tileSize)
-                }
+            this.selectTile(
+                Math.floor(evt.world.x / this.tileSize),
+                Math.floor(evt.world.y / this.tileSize)
+            )
+        },
+
+        selectTile (x, y) {
+            if (this.isBlocked(x, y)) {
+                this.selectedTile = { x, y }
             }
         },
 
@@ -1027,6 +1037,7 @@ export default {
             if (evt.key === 'd' && evt.altKey) {
                 evt.preventDefault()
                 this.debug = !this.debug
+                return
             }
 
             if (evt.key === 's' && evt.altKey) {
@@ -1035,6 +1046,7 @@ export default {
                 if (this.gameSpeed > 60) {
                     this.gameSpeed = 20
                 }
+                return
             }
 
             if (evt.key.match(/^[0-9]+$/)) {
@@ -1042,6 +1054,35 @@ export default {
                 let towerKeys = Object.keys(TowerConfig)
                 if (towerIndex < towerKeys.length) {
                     this.onBuildTowerClick(towerKeys[towerIndex])
+                }
+                return
+            }
+
+            if (evt.key === 'ArrowUp') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x, this.selectedTile.y - 1)
+                }
+            }
+
+            if (evt.key === 'ArrowRight') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x + 1, this.selectedTile.y)
+                }
+            }
+
+            if (evt.key === 'ArrowDown') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x, this.selectedTile.y + 1)
+                }
+            }
+
+            if (evt.key === 'ArrowLeft') {
+                evt.preventDefault()
+                if (this.selectedTile) {
+                    this.selectTile(this.selectedTile.x - 1, this.selectedTile.y)
                 }
             }
         },
