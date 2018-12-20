@@ -204,7 +204,7 @@
     }
 
     .portrait .nextWave {
-        top: calc(5vmin + 1em);
+        top: calc(5vmin + 2vmin);
     }
 
     .towerSelector {
