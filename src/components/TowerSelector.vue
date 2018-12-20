@@ -32,9 +32,9 @@
     .image {
         width: 100%;
         padding-top: 100%;
-        background-size: contain;
+        background-size: 150%;
         background-repeat: no-repeat;
-        background-position: center center;
+        background-position: center 20%;
     }
 </style>
 

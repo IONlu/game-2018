@@ -31,10 +31,18 @@
                     <fa-icon :icon="togglePanelIcon" />
                 </div>
                 <div :class="$style.panelContent">
-                    <tower-selector
-                        :class="$style.towerSelector"
-                        @select="onBuildTowerClick"
-                    />
+                    <template v-if="selectedTile">
+                        <tower-editor
+                            v-if="selectedTower"
+                            :class="$style.towerEditor"
+                            :tower="selectedTower"
+                        />
+                        <tower-selector
+                            v-else
+                            :class="$style.towerSelector"
+                            @select="onBuildTowerClick"
+                        />
+                    </template>
                 </div>
             </div>
             <resize-observer
@@ -207,7 +215,8 @@
         top: calc(5vmin + 2vmin);
     }
 
-    .towerSelector {
+    .towerSelector,
+    .towerEditor {
         width: 100%;
     }
 </style>
@@ -224,6 +233,7 @@ import Ticker from '../Ticker'
 import Vector from '../Vector'
 import TowerConfig from '../config/towers'
 import TowerSelector from './TowerSelector'
+import TowerEditor from './TowerEditor'
 import BugConfig from '../config/bugs'
 import AssetsImage from '../assets/assets.png'
 import AssetsConfig from '../assets/assets.json'
@@ -234,7 +244,8 @@ export default {
 
     components: {
         ResizeObserver,
-        TowerSelector
+        TowerSelector,
+        TowerEditor
     },
 
     props: {
@@ -1033,7 +1044,8 @@ export default {
                 targetBug: null,
                 debugGraphics,
                 bullet: data.bullet,
-                bulletTimeoutCounter: 0
+                bulletTimeoutCounter: 0,
+                data
             })
         },
 
