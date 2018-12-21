@@ -11,7 +11,7 @@
                 <td>Damage</td>
                 <td>
                     {{ damageLevel }}
-                    <span :class="$style.small">({{ damage }})</span>
+                    <span :class="$style.small">({{ damage }} <fa-icon icon="angle-double-right" /> {{ nextDamage }})</span>
                 </td>
                 <td>
                     <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('damage') }}
@@ -29,7 +29,7 @@
                 <td>Speed</td>
                 <td>
                     {{ speedLevel }}
-                    <span :class="$style.small">({{ speed }}s)</span>
+                    <span :class="$style.small">({{ speed }}s <fa-icon icon="angle-double-right" /> {{ nextSpeed }}s)</span>
                 </td>
                 <td>
                     <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('speed') }}
@@ -47,7 +47,7 @@
                 <td>Range</td>
                 <td>
                     {{ rangeLevel }}
-                    <span :class="$style.small">({{ range }})</span>
+                    <span :class="$style.small">({{ range }} <fa-icon icon="angle-double-right" /> {{ nextRange }})</span>
                 </td>
                 <td>
                     <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('range') }}
@@ -137,12 +137,24 @@ export default {
             return TowerHelpers.getRange(this.tower)
         },
 
+        nextRange () {
+            return TowerHelpers.getRange(this.tower, this.tower.range + 1)
+        },
+
         speed () {
             return TowerHelpers.getSpeed(this.tower)
         },
 
+        nextSpeed () {
+            return TowerHelpers.getSpeed(this.tower, this.tower.speed + 1)
+        },
+
         damage () {
             return TowerHelpers.getBugDamage(this.tower)
+        },
+
+        nextDamage () {
+            return TowerHelpers.getBugDamage(this.tower, null, this.tower.damage + 1)
         }
     },
 
