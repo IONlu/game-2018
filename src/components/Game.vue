@@ -1293,7 +1293,7 @@ export default {
                         'player': this.playerName,
                         'waveReached': this.wave,
                         'enemiesKilled': this.bugsKilled,
-                        'map': this.$vnode.key
+                        'map': this.map.name
                     }
                 }).then((response) => {
                     console.log(response)
