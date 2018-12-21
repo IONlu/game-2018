@@ -135,14 +135,17 @@ export const getLevelPrice = (tower, level) => {
     return Math.round(tower.data.price * (level / 4))
 }
 
-export const getRange = tower => {
-    return Math.round((tower.data.range.initial + ((tower.range - 1) * 0.5)) * 100) / 100
+export const getRange = (tower, level) => {
+    level = level || tower.range
+    return Math.round((tower.data.range.initial + ((level - 1) * 0.5)) * 100) / 100
 }
 
-export const getBugDamage = (tower, bug) => {
-    return Math.round((tower.data.damage.initial + ((tower.damage - 1) * tower.data.damage.initial * 0.5)) * 100) / 100
+export const getBugDamage = (tower, bug, level) => {
+    level = level || tower.damage
+    return Math.round((tower.data.damage.initial + ((level - 1) * tower.data.damage.initial * 0.5)) * 100) / 100
 }
 
-export const getSpeed = tower => {
-    return Math.round((tower.data.speed.initial / (1 + ((tower.speed - 1) * 0.1))) * 100) / 100
+export const getSpeed = (tower, level) => {
+    level = level || tower.speed
+    return Math.round((tower.data.speed.initial / (1 + ((level - 1) * 0.1))) * 100) / 100
 }
