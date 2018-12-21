@@ -132,13 +132,13 @@ export default {
 }
 
 export const getRange = tower => {
-    return tower.range * tower.data.range.initial
+    return Math.round((tower.data.range.initial + ((tower.range - 1) * 0.5)) * 100) / 100
 }
 
 export const getBugDamage = (tower, bug) => {
-    return tower.damage * tower.data.damage.initial
+    return Math.round((tower.data.damage.initial + ((tower.damage - 1) * tower.data.damage.initial * 0.5)) * 100) / 100
 }
 
 export const getSpeed = tower => {
-    return tower.speed * tower.data.speed.initial
+    return Math.round((tower.data.speed.initial / (1 + ((tower.speed - 1) * 0.1))) * 100) / 100
 }
