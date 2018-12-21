@@ -29,7 +29,7 @@
                     <h4>{{ map.name }}</h4>
                 </div>
                 <div
-                    v-for="(score, index) in getHighscoresByMap(index)"
+                    v-for="(score, index) in getHighscoresByMap(map.name)"
                     :key="score['_id']"
                     :class="$style.entry"
                 >
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div
-                    v-if="getHighscoresByMap(index).length === 0"
+                    v-if="getHighscoresByMap(map.name).length === 0"
                     :class="$style.entry">
                     No highscores
                 </div>
