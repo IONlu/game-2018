@@ -854,7 +854,10 @@ export default {
                     let targetVector = bullet.targetBug.position.clone().substract(bullet.position)
                     if (targetVector.length() <= 30) {
                         if (bullet.tower.data.damage.type === 'freeze') {
-                            bullet.targetBug.slowDown = TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
+                            bullet.targetBug.slowDown = Math.min(
+                                bullet.targetBug.slowDown,
+                                TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
+                            )
                         } else {
                             let damage = TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
                             this.updateBugHealth(bullet.targetBug, -damage)
