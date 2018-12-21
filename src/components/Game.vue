@@ -777,7 +777,7 @@ export default {
             this.bugs.forEach(bug => {
                 bug.position.add(bug.velocity)
 
-                bug.slowDown = Math.min(1, bug.slowDown + 0.0001)
+                bug.slowDown = Math.min(1, bug.slowDown + 0.002)
 
                 let flowFieldTile = this.getFlowFieldTile(bug.position)
                 let { x, y } = flowFieldTile
