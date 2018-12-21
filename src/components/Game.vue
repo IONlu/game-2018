@@ -777,6 +777,8 @@ export default {
             this.bugs.forEach(bug => {
                 bug.position.add(bug.velocity)
 
+                bug.slowDown = Math.min(1, bug.slowDown + 0.0001)
+
                 let flowFieldTile = this.getFlowFieldTile(bug.position)
                 let { x, y } = flowFieldTile
                 if (
@@ -812,7 +814,7 @@ export default {
                     steeringForce.normalize().multiply(bug.rotationSpeed)
                 }
 
-                bug.velocity.add(steeringForce).normalize().multiply(bug.speed)
+                bug.velocity.add(steeringForce).normalize().multiply(bug.speed * bug.slowDown)
 
                 // check collision
                 let targetX = Math.floor((bug.position.x + bug.velocity.x) * this.pixel2TileRatio / this.divide)
@@ -851,13 +853,17 @@ export default {
                     bullet.position.add(bullet.velocity)
                     let targetVector = bullet.targetBug.position.clone().substract(bullet.position)
                     if (targetVector.length() <= 30) {
-                        bullet.targetBug.health -= TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
-                        if (bullet.targetBug.health <= 0) {
-                            this.bugsKilled++
-                            bullet.targetBug.removed = true
-                            this.money += 3 + (bullet.targetBug.wave - 1)
+                        if (bullet.tower.data.damage.type === 'freeze') {
+                            bullet.targetBug.slowDown = TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
+                        } else {
+                            bullet.targetBug.health -= TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
+                            if (bullet.targetBug.health <= 0) {
+                                this.bugsKilled++
+                                bullet.targetBug.removed = true
+                                this.money += 3 + (bullet.targetBug.wave - 1)
+                            }
+                            this.updateHealthBar(bullet.targetBug)
                         }
-                        this.updateHealthBar(bullet.targetBug)
                         bullet.removed = true
                     } else {
                         bullet.velocity.set(targetVector).normalize().multiply(30)
@@ -999,7 +1005,8 @@ export default {
                 health: health,
                 removed: false,
                 healthBar,
-                wave
+                wave,
+                slowDown: 1
             }
             this.bugs.push(bug)
 

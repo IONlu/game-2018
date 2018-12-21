@@ -8,7 +8,7 @@
         </div>
         <table :class="$style.table">
             <tr>
-                <td>Damage</td>
+                <td>{{ damageText }}</td>
                 <td>
                     {{ damageLevel }}
                     <span :class="$style.small">({{ damage }} <fa-icon icon="angle-double-right" /> {{ nextDamage }})</span>
@@ -174,6 +174,16 @@ export default {
 
         nextDamage () {
             return TowerHelpers.getBugDamage(this.tower, null, this.tower.damage + 1)
+        },
+
+        damageText () {
+            switch (this.tower.data.damage.type) {
+                case 'freeze':
+                    return 'Freeze'
+                case 'splash':
+                    return 'Splash D.'
+            }
+            return 'Damage'
         }
     },
 

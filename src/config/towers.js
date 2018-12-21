@@ -5,6 +5,32 @@ import TankImage from '../assets/svg/tank.svg'
 import TracerImage from '../assets/svg/tracer.svg'
 
 export default {
+    tank: {
+        cannon: [
+            'tank'
+        ],
+        base: [
+            'base1',
+            'base2',
+            'base3'
+        ],
+        bullet: [
+            'tankammo'
+        ],
+        price: 10,
+        image: TankImage,
+        speed: {
+            initial: 1
+        },
+        range: {
+            initial: 3
+        },
+        damage: {
+            initial: 5,
+            type: 'normal'
+        }
+    },
+
     cannon: {
         cannon: [
             'canon'
@@ -26,7 +52,8 @@ export default {
             initial: 2
         },
         damage: {
-            initial: 80
+            initial: 80,
+            type: 'splash'
         }
     },
 
@@ -51,7 +78,8 @@ export default {
             initial: 2
         },
         damage: {
-            initial: 100
+            initial: 100,
+            type: 'normal'
         }
     },
 
@@ -76,32 +104,8 @@ export default {
             initial: 2
         },
         damage: {
-            initial: 1
-        }
-    },
-
-    tank: {
-        cannon: [
-            'tank'
-        ],
-        base: [
-            'base1',
-            'base2',
-            'base3'
-        ],
-        bullet: [
-            'tankammo'
-        ],
-        price: 10,
-        image: TankImage,
-        speed: {
-            initial: 1
-        },
-        range: {
-            initial: 3
-        },
-        damage: {
-            initial: 5
+            initial: 1,
+            type: 'freeze'
         }
     },
 
@@ -126,7 +130,8 @@ export default {
             initial: 4
         },
         damage: {
-            initial: 5
+            initial: 5,
+            type: 'normal'
         }
     }
 }
@@ -142,6 +147,9 @@ export const getRange = (tower, level) => {
 
 export const getBugDamage = (tower, bug, level) => {
     level = level || tower.damage
+    if (tower.data.damage.type === 'freeze') {
+        return Math.round((1 / ((level + 5) / 5)) * 100) / 100
+    }
     return Math.round((tower.data.damage.initial + ((level - 1) * tower.data.damage.initial * 0.5)) * 100) / 100
 }
 
