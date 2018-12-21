@@ -27,7 +27,7 @@ export default {
         },
 
         mapName () {
-            this.mapByName.name || 'serpent'
+            return this.mapByName.name || 'serpent'
         }
     }
 }
