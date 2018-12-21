@@ -57,10 +57,17 @@
                         />
                         <tower-selector
                             v-else
+                            :game="this"
                             :class="$style.towerSelector"
                             @select="onBuildTowerClick"
                         />
                     </template>
+                    <div
+                        v-else
+                        :class="$style.text"
+                    >
+                        Select cell on map to build a tower
+                    </div>
                 </div>
             </div>
             <resize-observer
@@ -211,6 +218,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        .text {
+            padding: 1em;
+            text-align: center;
+        }
     }
 
     .button {

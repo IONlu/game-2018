@@ -53,6 +53,13 @@
 import TowerConfig from '../config/towers'
 
 export default {
+    props: {
+        game: {
+            type: Object,
+            required: true
+        }
+    },
+
     data () {
         return {
             selected: null
