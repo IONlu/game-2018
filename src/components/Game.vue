@@ -891,7 +891,7 @@ export default {
             if (bug.health <= 0) {
                 this.bugsKilled++
                 bug.removed = true
-                this.money += 3 + (bug.wave - 1)
+                this.money += 5 + Math.floor(((bug.wave - 1) / 5))
             }
             this.updateHealthBar(bug)
         },

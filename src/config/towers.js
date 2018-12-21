@@ -26,59 +26,7 @@ export default {
             initial: 3
         },
         damage: {
-            initial: 5,
-            type: 'normal'
-        }
-    },
-
-    cannon: {
-        cannon: [
-            'canon'
-        ],
-        base: [
-            'base1',
-            'base2',
-            'base3'
-        ],
-        bullet: [
-            'canonammo'
-        ],
-        price: 40,
-        image: CanonImage,
-        speed: {
-            initial: 3
-        },
-        range: {
-            initial: 2
-        },
-        damage: {
-            initial: 80,
-            type: 'splash'
-        }
-    },
-
-    ion: {
-        cannon: [
-            'ion'
-        ],
-        base: [
-            'base1',
-            'base2',
-            'base3'
-        ],
-        bullet: [
-            'ionammo'
-        ],
-        price: 40,
-        image: IonImage,
-        speed: {
-            initial: 6
-        },
-        range: {
-            initial: 2
-        },
-        damage: {
-            initial: 100,
+            initial: 10,
             type: 'normal'
         }
     },
@@ -95,13 +43,13 @@ export default {
         bullet: [
             'shieldammo'
         ],
-        price: 30,
+        price: 20,
         image: ShieldImage,
         speed: {
             initial: 1
         },
         range: {
-            initial: 2
+            initial: 3
         },
         damage: {
             initial: 1,
@@ -130,8 +78,60 @@ export default {
             initial: 4
         },
         damage: {
-            initial: 5,
+            initial: 7,
             type: 'normal'
+        }
+    },
+
+    ion: {
+        cannon: [
+            'ion'
+        ],
+        base: [
+            'base1',
+            'base2',
+            'base3'
+        ],
+        bullet: [
+            'ionammo'
+        ],
+        price: 50,
+        image: IonImage,
+        speed: {
+            initial: 6
+        },
+        range: {
+            initial: 2
+        },
+        damage: {
+            initial: 300,
+            type: 'normal'
+        }
+    },
+
+    cannon: {
+        cannon: [
+            'canon'
+        ],
+        base: [
+            'base1',
+            'base2',
+            'base3'
+        ],
+        bullet: [
+            'canonammo'
+        ],
+        price: 60,
+        image: CanonImage,
+        speed: {
+            initial: 3
+        },
+        range: {
+            initial: 2
+        },
+        damage: {
+            initial: 80,
+            type: 'splash'
         }
     }
 }
