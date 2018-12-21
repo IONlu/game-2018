@@ -74,6 +74,7 @@ app.get('/highscores', (req, res) => {
         .sort({
             waveReached: -1
         })
+        .limit(10)
         .toArray((err, results) => {
             if (err) throw err
             // eslint-disable-next-line no-console
