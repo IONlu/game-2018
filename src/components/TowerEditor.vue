@@ -14,7 +14,15 @@
                     <span :class="$style.small">({{ damage }})</span>
                 </td>
                 <td>
-                    <button>Upgrade</button>
+                    <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('damage') }}
+                </td>
+                <td>
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('damage')"
+                    >
+                        <fa-icon icon="angle-double-up" /> Upgrade
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -24,7 +32,15 @@
                     <span :class="$style.small">({{ speed }}s)</span>
                 </td>
                 <td>
-                    <button>Upgrade</button>
+                    <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('speed') }}
+                </td>
+                <td>
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('speed')"
+                    >
+                        <fa-icon icon="angle-double-up" /> Upgrade
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -34,7 +50,15 @@
                     <span :class="$style.small">({{ range }})</span>
                 </td>
                 <td>
-                    <button>Upgrade</button>
+                    <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('range') }}
+                </td>
+                <td>
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('range')"
+                    >
+                        <fa-icon icon="angle-double-up" /> Upgrade
+                    </button>
                 </td>
             </tr>
         </table>
@@ -79,6 +103,11 @@ import * as TowerHelpers from '../config/towers'
 
 export default {
     props: {
+        game: {
+            type: Object,
+            required: true
+        },
+
         tower: {
             type: Object,
             required: true
@@ -114,6 +143,23 @@ export default {
 
         damage () {
             return TowerHelpers.getBugDamage(this.tower)
+        }
+    },
+
+    methods: {
+        upgrade (type) {
+            let price = this.getUpgradePrice(type)
+            if (this.game.money >= price) {
+                this.game.money -= price
+                this.tower[type]++
+                if (type === 'range') {
+                    this.game.updateTowerRangeOverlay()
+                }
+            }
+        },
+
+        getUpgradePrice (type) {
+            return TowerHelpers.getLevelPrice(this.tower, this.tower[type] + 1)
         }
     }
 }

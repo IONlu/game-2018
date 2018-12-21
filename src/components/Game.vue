@@ -51,6 +51,7 @@
                     <template v-if="selectedTile">
                         <tower-editor
                             v-if="selectedTower"
+                            :game="this"
                             :class="$style.towerEditor"
                             :tower="selectedTower"
                         />
@@ -494,15 +495,7 @@ export default {
         selectedTower () {
             if (this.selectedTower) {
                 this.uiContainer.addChildAt(this.towerRangeGraphics, 0)
-                this.towerRangeGraphics.clear()
-                this.towerRangeGraphics.lineStyle(0)
-                this.towerRangeGraphics.beginFill(0x003399, 0.5)
-                this.towerRangeGraphics.drawCircle(
-                    this.selectedTower.position.x,
-                    this.selectedTower.position.y,
-                    TowerHelpers.getRange(this.selectedTower) * this.tileSize
-                )
-                this.towerRangeGraphics.endFill()
+                this.updateTowerRangeOverlay()
             } else {
                 this.uiContainer.removeChild(this.towerRangeGraphics)
             }
@@ -1212,6 +1205,20 @@ export default {
             this.$router.push({
                 name: 'Select'
             })
+        },
+
+        updateTowerRangeOverlay () {
+            this.towerRangeGraphics.clear()
+            if (this.selectedTower) {
+                this.towerRangeGraphics.lineStyle(0)
+                this.towerRangeGraphics.beginFill(0x003399, 0.5)
+                this.towerRangeGraphics.drawCircle(
+                    this.selectedTower.position.x,
+                    this.selectedTower.position.y,
+                    TowerHelpers.getRange(this.selectedTower) * this.tileSize
+                )
+                this.towerRangeGraphics.endFill()
+            }
         }
     }
 }
