@@ -5,6 +5,12 @@
         <div
             :class="mainClasses"
         >
+            <transition :name="$style.fade">
+                <div
+                    v-if="gameOver"
+                    :class="$style.gameOver"
+                />
+            </transition>
             <div
                 :class="$style.topBar"
             >
@@ -219,6 +225,29 @@
     .towerEditor {
         width: 100%;
     }
+
+    .gameOver {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background: #00000099 url(../assets/svg/gameover.svg) center center no-repeat;
+        background-size: 80vmin;
+        z-index: 999999;
+        transition: all 0.5s;
+    }
+
+    .fade {
+        &:global(-enter-active),
+        &:global(-leave-acive) {
+            transition: background 0.5s;
+        }
+
+        &:global(-enter),
+        &:global(-leave-to) {
+            background-color: transparent;
+            background-size: 0;
+        }
+    }
 </style>
 
 <script>
@@ -264,7 +293,7 @@ export default {
             towers: [],
             bullets: [],
             selectedTile: null,
-            health: 100,
+            health: 30,
             bugsLeft: 0,
             wave: 0,
             screen: {
@@ -280,7 +309,8 @@ export default {
             nextWaveTimeout: 200,
             nextBugHealth: 100,
             bugHealthIncrement: 20,
-            bugHealthIncrementIncrement: 7
+            bugHealthIncrementIncrement: 7,
+            gameOver: false
         }
     },
 
@@ -478,6 +508,11 @@ export default {
             if (this.lastBugSpawned && this.allBugsKilledCounter >= this.nextWaveTimeout) {
                 this.nextWave()
             }
+        },
+
+        gameOver () {
+            this.gameOver = true
+            this.ticker.stop()
         }
     },
 
@@ -538,19 +573,19 @@ export default {
 
         // UI: create selected tile overlay
         this.selectedTileOverlay = new Graphics()
-        this.selectedTileOverlay.lineStyle(5, 0x00FFFF)
-        this.selectedTileOverlay.moveTo(0, 25)
+        this.selectedTileOverlay.lineStyle(this.tileSize * 0.05, 0x00FFFF)
+        this.selectedTileOverlay.moveTo(0, this.tileSize * 0.25)
         this.selectedTileOverlay.lineTo(0, 0)
-        this.selectedTileOverlay.lineTo(25, 0)
-        this.selectedTileOverlay.moveTo(75, 0)
-        this.selectedTileOverlay.lineTo(100, 0)
-        this.selectedTileOverlay.lineTo(100, 25)
-        this.selectedTileOverlay.moveTo(100, 75)
-        this.selectedTileOverlay.lineTo(100, 100)
-        this.selectedTileOverlay.lineTo(75, 100)
-        this.selectedTileOverlay.moveTo(25, 100)
-        this.selectedTileOverlay.lineTo(0, 100)
-        this.selectedTileOverlay.lineTo(0, 75)
+        this.selectedTileOverlay.lineTo(this.tileSize * 0.25, 0)
+        this.selectedTileOverlay.moveTo(this.tileSize * 0.75, 0)
+        this.selectedTileOverlay.lineTo(this.tileSize, 0)
+        this.selectedTileOverlay.lineTo(this.tileSize, this.tileSize * 0.25)
+        this.selectedTileOverlay.moveTo(this.tileSize, this.tileSize * 0.75)
+        this.selectedTileOverlay.lineTo(this.tileSize, this.tileSize)
+        this.selectedTileOverlay.lineTo(this.tileSize * 0.75, this.tileSize)
+        this.selectedTileOverlay.moveTo(this.tileSize * 0.25, this.tileSize)
+        this.selectedTileOverlay.lineTo(0, this.tileSize)
+        this.selectedTileOverlay.lineTo(0, this.tileSize * 0.75)
 
         // UI: tower range
         this.towerRangeGraphics = new Graphics()
@@ -906,6 +941,10 @@ export default {
                 return
             }
 
+            if (this.bugsLeft > 0) {
+                this.money += 5 * (this.wave + 1)
+            }
+
             // select random bug
             let bugKeys = Object.keys(BugConfig)
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
@@ -960,6 +999,9 @@ export default {
         handleBugReachesEnd (bug) {
             this.health--
             bug.removed = true
+            if (this.health === 0) {
+                this.gameOver = true
+            }
         },
 
         removeBugs () {
@@ -1133,7 +1175,7 @@ export default {
         },
 
         onVisibilityChange () {
-            if (document.hidden) {
+            if (this.gameOver || document.hidden) {
                 this.ticker.stop()
             } else {
                 this.ticker.start()

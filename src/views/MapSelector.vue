@@ -1,7 +1,7 @@
 <template>
-    <game
-        :map="map"
-    />
+    <div>
+        Select Map
+    </div>
 </template>
 
 <style>
@@ -17,7 +17,6 @@ body {
 
 <script>
 import Vue from 'vue'
-import Game from '../components/Game.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -44,14 +43,19 @@ Vue.component('fa-icon', FontAwesomeIcon)
 export default {
     name: 'MapSelector',
 
-    components: {
-        Game
-    },
-
     data () {
         return {
-            map: maps[Math.floor(Math.random() * maps.length)]
+            mapIndex: Math.floor(Math.random() * maps.length)
         }
+    },
+
+    created () {
+        this.$router.push({
+            name: 'Play',
+            params: {
+                mapIndex: this.mapIndex
+            }
+        })
     }
 }
 </script>
