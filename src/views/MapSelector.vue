@@ -13,11 +13,14 @@
                 v-for="(map, index) in maps"
                 :key="index"
                 :class="$style.mapContainer"
-                @click="playMap(index)"
+                @click="playMap(map.name)"
             >
                 <img
                     :class="$style.mapImage"
                     :src="map.image">
+                <div>
+                    {{ map.name }}
+                </div>
             </div>
         </div>
         <div :class="$style.mapsContainer">
@@ -107,7 +110,7 @@
         background-color: rgba(0, 79, 132, 0.2);
         flex-basis: 1;
         max-width: 60vmin;
-        min-height: 32vmin;
+        min-height: 35vmin;
         cursor: pointer;
     }
 
@@ -175,19 +178,18 @@ export default {
     },
 
     methods: {
-        playMap (map) {
+        playMap (name) {
             this.$router.push({
                 name: 'Play',
                 params: {
-                    mapIndex: map
+                    mapName: name
                 }
             })
         },
 
         showHighscores () {
             this.$router.push({
-                name: 'Highscores',
-                path: '/highscores'
+                name: 'Highscores'
             })
         }
     }

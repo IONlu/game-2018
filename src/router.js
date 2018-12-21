@@ -20,7 +20,7 @@ export default new Router({
             component: Highscores
         },
         {
-            path: '/play/:mapIndex',
+            path: '/play/:mapName',
             name: 'Play',
             component: Game
         }

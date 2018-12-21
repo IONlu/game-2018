@@ -5,6 +5,7 @@ import map3Image from '../assets/maps/map3.png'
 
 export default [
     {
+        name: 'serpent',
         width: 10,
         height: 11,
         data: 'SFFFFFFFFF' +
@@ -20,9 +21,10 @@ export default [
             'EFFFFFFFFF',
         startOrientation: Math.PI / 2,
         endOrientation: Math.PI / 2,
-        image: map0Image
+        image: map3Image
     },
     {
+        name: 'spyro',
         width: 14,
         height: 14,
         data: 'WFFFFFFFFFFFFF' +
@@ -41,9 +43,10 @@ export default [
             'WWWFFFFFFFFFFF',
         startOrientation: 0,
         endOrientation: Math.PI,
-        image: map1Image
+        image: map0Image
     },
     {
+        name: 'octet',
         width: 13,
         height: 11,
         data: 'WFFFFFFFFFFFW' +
@@ -62,6 +65,7 @@ export default [
         image: map2Image
     },
     {
+        name: 'coil',
         width: 18,
         height: 17,
         data: 'WWWWWWWWWWWWWWWWWW' +
@@ -83,6 +87,6 @@ export default [
             'FFFFFFFFFFFFFFWWWW',
         startOrientation: -Math.PI / 2,
         endOrientation: Math.PI,
-        image: map3Image
+        image: map1Image
     }
 ]

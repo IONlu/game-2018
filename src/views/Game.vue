@@ -1,7 +1,7 @@
 <template>
     <game
         v-if="map"
-        :key="mapIndex"
+        :key="mapName"
         :map="map"
     />
 </template>
@@ -16,12 +16,18 @@ export default {
     },
 
     computed: {
-        mapIndex () {
-            return parseInt(this.$route.params.mapIndex, 10) || 0
+        map () {
+            return this.mapByName
         },
 
-        map () {
-            return maps[this.mapIndex]
+        mapByName () {
+            return maps.find((map) => {
+                return map.name === this.$route.params.mapName
+            })
+        },
+
+        mapName () {
+            return this.mapByName.name || 'serpent'
         }
     }
 }
