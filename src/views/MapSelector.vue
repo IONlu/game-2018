@@ -47,7 +47,7 @@
         padding: 0;
         width: 100vw;
         height: 100vh;
-        overflow: hidden;
+        overflow: auto;
     }
 
     .mapSelector {
@@ -56,7 +56,7 @@
         display: flex;
         flex-direction: column;
         width: 100vw;
-        height: 100vh;
+        min-height: 100vh;
         font-family: Arial, sans-serif;
         font-size: 4vmin;
         background: url(../assets/svg/Background.svg) center center no-repeat fixed;
@@ -89,7 +89,7 @@
         display: flex;
         flex-direction: row;
         justify-content: center;
-        align-items: flex-start;
+        align-items: stretch;
         flex-wrap: wrap;
     }
 
