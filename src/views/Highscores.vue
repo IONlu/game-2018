@@ -188,7 +188,7 @@ export default {
     },
 
     mounted () {
-        axios.defaults.baseURL = 'http://192.168.0.63:3000'
+        axios.defaults.baseURL = 'http://localhost:3000'
         this.getAsyncHighscores()
     },
 
