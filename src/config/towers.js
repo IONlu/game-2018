@@ -131,6 +131,10 @@ export default {
     }
 }
 
+export const getLevelPrice = (tower, level) => {
+    return Math.round(tower.data.price * (level / 4))
+}
+
 export const getRange = tower => {
     return Math.round((tower.data.range.initial + ((tower.range - 1) * 0.5)) * 100) / 100
 }

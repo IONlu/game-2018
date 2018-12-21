@@ -14,6 +14,9 @@
                     <span :class="$style.small">({{ damage }})</span>
                 </td>
                 <td>
+                    <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('damage') }}
+                </td>
+                <td>
                     <button
                         :class="game.$style.button"
                         @click="upgrade('damage')"
@@ -29,6 +32,9 @@
                     <span :class="$style.small">({{ speed }}s)</span>
                 </td>
                 <td>
+                    <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('speed') }}
+                </td>
+                <td>
                     <button
                         :class="game.$style.button"
                         @click="upgrade('speed')"
@@ -42,6 +48,9 @@
                 <td>
                     {{ rangeLevel }}
                     <span :class="$style.small">({{ range }})</span>
+                </td>
+                <td>
+                    <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('range') }}
                 </td>
                 <td>
                     <button
@@ -139,10 +148,18 @@ export default {
 
     methods: {
         upgrade (type) {
-            this.tower[type]++
-            if (type === 'range') {
-                this.game.updateTowerRangeOverlay()
+            let price = this.getUpgradePrice(type)
+            if (this.game.money >= price) {
+                this.game.money -= price
+                this.tower[type]++
+                if (type === 'range') {
+                    this.game.updateTowerRangeOverlay()
+                }
             }
+        },
+
+        getUpgradePrice (type) {
+            return TowerHelpers.getLevelPrice(this.tower, this.tower[type] + 1)
         }
     }
 }
