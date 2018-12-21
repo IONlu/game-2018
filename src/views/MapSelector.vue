@@ -46,18 +46,18 @@
         margin: 0;
         padding: 0;
         width: 100vw;
-        min-height: 100vh;
-        overflow-x: hidden;
-        overflow-y: auto;
+        height: 100vh;
+        overflow: auto;
     }
 
     .mapSelector {
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
         color: white;
         display: flex;
         flex-direction: column;
         width: 100vw;
-        min-height: 100vh;
+        height: 100vh;
         font-family: Arial, sans-serif;
         font-size: 4vmin;
         background: url(../assets/svg/Background.svg) center center no-repeat fixed;
