@@ -21,7 +21,7 @@ let allowedKeys = [
 MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     if (err) throw err
 
-    db = client.db('scores')
+    db = client.db('game.2018.scores')
     app.listen(3000, () => {
         // console.log('listening on 3000')
     })
