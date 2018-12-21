@@ -678,7 +678,6 @@ export default {
         if (window.localStorage.playerName !== '') {
             this.playerName = window.localStorage.playerName
         }
-        axios.defaults.baseUrl = 'http://localhost:3000'
         this.renderer = autoDetectRenderer(
             this.$refs.renderContainer.clientWidth,
             this.$refs.renderContainer.clientHeight,
