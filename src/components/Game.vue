@@ -392,7 +392,8 @@ export default {
             bugHealthIncrement: 20,
             bugHealthIncrementIncrement: 7,
             gameOver: false,
-            playerName: ''
+            playerName: '',
+            bugsKilled: 0
         }
     },
 
@@ -849,8 +850,9 @@ export default {
                     if (targetVector.length() <= 30) {
                         bullet.targetBug.health -= TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
                         if (bullet.targetBug.health <= 0) {
+                            this.bugsKilled++
                             bullet.targetBug.removed = true
-                            this.money += 2
+                            this.money += 3 + (bullet.targetBug.wave - 1)
                         }
                         this.updateHealthBar(bullet.targetBug)
                         bullet.removed = true
@@ -965,7 +967,7 @@ export default {
             )
         },
 
-        spawnBug (data, health) {
+        spawnBug (data, health, wave) {
             let sprite
             if (data.animated) {
                 sprite = new AnimatedSprite(this.spritesheet.animations[data.texture])
@@ -993,7 +995,8 @@ export default {
                 maxHealth: health,
                 health: health,
                 removed: false,
-                healthBar
+                healthBar,
+                wave
             }
             this.bugs.push(bug)
 
@@ -1042,7 +1045,7 @@ export default {
                 if (tickCounter === 20) {
                     tickCounter = 0
                     count--
-                    this.spawnBug(bugData, health)
+                    this.spawnBug(bugData, health, wave)
                     if (count === 0) {
                         if (this.wave === wave) {
                             this.lastBugSpawned = true
