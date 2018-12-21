@@ -17,6 +17,9 @@
                 :class="$style.mapHighscore"
             >
                 <div :class="$style.highscoreHeader">
+                    <img
+                        :class="$style.mapImage"
+                        :src="map.image">
                     <h4>Map {{ index }}</h4>
                 </div>
                 <div
@@ -73,37 +76,58 @@
     }
 
     .logo {
-        width: 15%;
+        width: 30vmin;
     }
 
     .highscoresContainer {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         flex-wrap: wrap;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .mapHighscore {
+            min-width: 50vmin;
+        }
+    }
+
+    @media screen and (min-width: 1000px) {
+        .mapHighscore {
+            min-width: 40vmin;
+        }
     }
 
     .mapHighscore {
         display: flex;
-        /* flex: 1; */
-        justify-content: center;
+        flex: 1;
+        justify-content: flex-start;
         border: 1px solid white;
         margin: 3vmin;
         font-size: .6em;
         flex-direction: column;
         padding: 20px;
         background-color: rgba(0, 79, 132, 0.2);
-        flex-basis: max-content;
+        flex-basis: 1;
+        max-width: 60vmin;
+        min-height: 20vmin;
     }
 
     .highscoreHeader {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
         h4 {
             margin: 0;
         }
         padding-bottom: 30px;
+        border-bottom: 1px solid white;
+        margin-bottom: 30px;
+    }
+
+    .mapImage {
+        height: 5vmin;
     }
 
     .entry {
