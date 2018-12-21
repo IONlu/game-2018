@@ -9,7 +9,18 @@
                 <div
                     v-if="gameOver"
                     :class="$style.gameOver"
-                />
+                >
+                    <div
+                        :class="$style.newGameButtonContainer"
+                    >
+                        <button
+                            :class="$style.newGame"
+                            @click="newGame"
+                        >
+                            <fa-icon icon="play" /> New Game
+                        </button>
+                    </div>
+                </div>
             </transition>
             <div
                 :class="$style.topBar"
@@ -59,7 +70,7 @@
                     :class="$style.renderContainer"
                 />
             </resize-observer>
-            <div
+            <button
                 v-if="showNextWaveButton"
                 :class="$style.nextWave"
                 @click="nextWave"
@@ -68,7 +79,7 @@
                 <template v-if="bugsLeft === 0">
                     <fa-icon icon="clock" /> {{ noBugsLeftCountDown }}
                 </template>
-            </div>
+            </button>
         </div>
     </resize-observer>
 </template>
@@ -201,16 +212,31 @@
         justify-content: center;
     }
 
-    .nextWave {
-        position: absolute;
-        border-radius: 1vmax;
+    .button {
         background: #00000099;
         color: #FFF;
-        border-style: solid;
-        border-color: #999;
-        right: 2vmin;
-        padding: 1vmin;
+        border: 2px solid #999;
+        border-radius: 1vmax;
         cursor: pointer;
+        font-size: 1em;
+        padding: 1vmin;
+    }
+
+    .newGameButtonContainer {
+        position: absolute;
+        bottom: 2vmin;
+        width: 100vw;
+        text-align: center;
+    }
+
+    .newGame {
+        composes: button;
+    }
+
+    .nextWave {
+        composes: button;
+        position: absolute;
+        right: 2vmin;
     }
 
     .landscape .nextWave {
@@ -230,7 +256,7 @@
         position: absolute;
         width: 100vw;
         height: 100vh;
-        background: #00000099 url(../assets/svg/gameover.svg) center center no-repeat;
+        background: #000000CC url(../assets/svg/gameover.svg) center center no-repeat;
         background-size: 80vmin;
         z-index: 999999;
         transition: all 0.5s;
@@ -1180,6 +1206,12 @@ export default {
             } else {
                 this.ticker.start()
             }
+        },
+
+        newGame () {
+            this.$router.push({
+                name: 'Select'
+            })
         }
     }
 }
