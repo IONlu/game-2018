@@ -2,6 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var cors = require('cors')
 var app = express()
+var package = require('../../package.json')
 
 app.use(express.static('dist'))
 app.use(bodyParser())
@@ -53,7 +54,11 @@ app.post('/highscores', (req, res) => {
             }
         })
         if (check) {
-            db.collection('highscores').insertOne(req.body, (err, result) => {
+            let data = {
+                ...req.body,
+                version: package.version
+            }
+            db.collection('highscores').insertOne(data, (err, result) => {
                 if (err) throw err
                 db.collection('highscores').find({
                     '_id': result.insertedId
