@@ -5,7 +5,7 @@ var app = express()
 var packageData = require('../../package.json')
 var path = require('path')
 
-app.use(express.static(path.resolve(__dirname, 'dist')))
+app.use(express.static(path.resolve(__dirname, '..', '..', 'dist')))
 app.use(bodyParser())
 app.use(cors())
 
