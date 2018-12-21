@@ -14,7 +14,12 @@
                     <span :class="$style.small">({{ damage }})</span>
                 </td>
                 <td>
-                    <button>Upgrade</button>
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('damage')"
+                    >
+                        <fa-icon icon="angle-double-up" /> Upgrade
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -24,7 +29,12 @@
                     <span :class="$style.small">({{ speed }}s)</span>
                 </td>
                 <td>
-                    <button>Upgrade</button>
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('speed')"
+                    >
+                        <fa-icon icon="angle-double-up" /> Upgrade
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -34,7 +44,12 @@
                     <span :class="$style.small">({{ range }})</span>
                 </td>
                 <td>
-                    <button>Upgrade</button>
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('range')"
+                    >
+                        <fa-icon icon="angle-double-up" /> Upgrade
+                    </button>
                 </td>
             </tr>
         </table>
@@ -79,6 +94,11 @@ import * as TowerHelpers from '../config/towers'
 
 export default {
     props: {
+        game: {
+            type: Object,
+            required: true
+        },
+
         tower: {
             type: Object,
             required: true
@@ -114,6 +134,15 @@ export default {
 
         damage () {
             return TowerHelpers.getBugDamage(this.tower)
+        }
+    },
+
+    methods: {
+        upgrade (type) {
+            this.tower[type]++
+            if (type === 'range') {
+                this.game.updateTowerRangeOverlay()
+            }
         }
     }
 }
