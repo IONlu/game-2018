@@ -26,7 +26,7 @@
                     <img
                         :class="$style.mapImage"
                         :src="map.image">
-                    <h4>Map {{ index }}</h4>
+                    <h4>{{ map.name }}</h4>
                 </div>
                 <div
                     v-for="(score, index) in getHighscoresByMap(index)"
