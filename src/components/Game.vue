@@ -856,13 +856,20 @@ export default {
                         if (bullet.tower.data.damage.type === 'freeze') {
                             bullet.targetBug.slowDown = TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
                         } else {
-                            bullet.targetBug.health -= TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
-                            if (bullet.targetBug.health <= 0) {
-                                this.bugsKilled++
-                                bullet.targetBug.removed = true
-                                this.money += 3 + (bullet.targetBug.wave - 1)
+                            let damage = TowerHelpers.getBugDamage(bullet.tower, bullet.targetBug)
+                            this.updateBugHealth(bullet.targetBug, -damage)
+                            if (bullet.tower.data.damage.type === 'splash') {
+                                let maxDistance = this.tileSize * 1.5
+                                this.bugs.forEach(bug => {
+                                    if (bug === bullet.targetBug) {
+                                        return
+                                    }
+                                    let distance = bug.position.clone().substract(bullet.targetBug.position).length()
+                                    if (distance < maxDistance) {
+                                        this.updateBugHealth(bug, -damage * ((maxDistance - distance) / maxDistance))
+                                    }
+                                })
                             }
-                            this.updateHealthBar(bullet.targetBug)
                         }
                         bullet.removed = true
                     } else {
@@ -874,6 +881,16 @@ export default {
             // remove items
             this.removeBullets()
             this.removeBugs()
+        },
+
+        updateBugHealth (bug, health) {
+            bug.health += health
+            if (bug.health <= 0) {
+                this.bugsKilled++
+                bug.removed = true
+                this.money += 3 + (bug.wave - 1)
+            }
+            this.updateHealthBar(bug)
         },
 
         towerCanReachBug (tower, bug) {
