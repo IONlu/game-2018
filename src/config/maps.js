@@ -1,3 +1,8 @@
+import map0Image from '../assets/maps/map0.png'
+import map1Image from '../assets/maps/map1.png'
+import map2Image from '../assets/maps/map2.png'
+import map3Image from '../assets/maps/map3.png'
+
 export default [
     {
         width: 10,
@@ -15,7 +20,7 @@ export default [
             'EFFFFFFFFF',
         startOrientation: Math.PI / 2,
         endOrientation: Math.PI / 2,
-        image: null
+        image: map0Image
     },
     {
         width: 14,
@@ -36,7 +41,7 @@ export default [
             'WWWFFFFFFFFFFF',
         startOrientation: 0,
         endOrientation: Math.PI,
-        image: null
+        image: map1Image
     },
     {
         width: 13,
@@ -54,7 +59,7 @@ export default [
             'WFFFFFFFFFFFW',
         startOrientation: Math.PI / 2,
         endOrientation: -Math.PI / 2,
-        image: null
+        image: map2Image
     },
     {
         width: 18,
@@ -78,6 +83,6 @@ export default [
             'FFFFFFFFFFFFFFWWWW',
         startOrientation: -Math.PI / 2,
         endOrientation: Math.PI,
-        image: null
+        image: map3Image
     }
 ]
