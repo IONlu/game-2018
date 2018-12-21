@@ -112,9 +112,9 @@
         width: 100vw;
         height: 100vh;
         font-family: Arial, sans-serif;
-        font-size: 4vmin;
         background: url(../assets/svg/Background.svg) center center no-repeat fixed;
         background-size: cover;
+        font-size: 28px;
 
         * {
             box-sizing: border-box;
@@ -399,7 +399,7 @@ export default {
 
     computed: {
         isMobile () {
-            return this.screen.width <= 1000 && this.screen.height <= 1000
+            return this.screen.width <= 1000 || this.screen.height <= 1000
         },
 
         isPortrait () {
