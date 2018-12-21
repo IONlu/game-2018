@@ -32,7 +32,7 @@
                             :class="$style.newGame"
                             @click="newGame"
                         >
-                            <fa-icon icon="play" /> New Game
+                            <fa-icon icon="play" /> Replay
                         </button>
                     </div>
                 </div>
