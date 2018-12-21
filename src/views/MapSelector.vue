@@ -1,18 +1,146 @@
 <template>
-    <div>
-        Select Map
+    <div :class="$style.mapSelector">
+        <div :class="$style.logoContainer">
+            <img
+                :class="$style.logo"
+                src="../assets/svg/logo.svg">
+        </div>
+        <div :class="$style.header">
+            <h3>Select to play</h3>
+        </div>
+        <div :class="$style.mapsContainer">
+            <div
+                v-for="(map, index) in maps"
+                :key="index"
+                :class="$style.mapContainer"
+                @click="playMap(index)"
+            >
+                <img
+                    :class="$style.mapImage"
+                    :src="map.image">
+                <div>
+                    Map {{ index }}
+                </div>
+            </div>
+        </div>
+        <div :class="$style.mapsContainer">
+            <div :class="$style.buttonContainer">How to play</div>
+            <div
+                :class="$style.buttonContainer"
+                @click="showHighscores">Highscores</div>
+        </div>
     </div>
 </template>
 
-<style>
-html,
-body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
+<style module>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .mapSelector {
+        overflow: auto;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        font-size: 4vmin;
+        background: url(../assets/svg/Background.svg) center center no-repeat fixed;
+        background-size: cover;
+
+        * {
+            box-sizing: border-box;
+        }
+    }
+
+    .header {
+        display: flex;
+        justify-content: center;
+    }
+
+    .logoContainer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding-right: 5vmin;
+        padding-left: 5vmin;
+        padding-top: 5vmin;
+    }
+
+    .logo {
+        width: 30vmin;
+    }
+
+    .mapsContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .mapContainer {
+            min-width: 50vmin;
+        }
+    }
+
+    @media screen and (min-width: 1000px) {
+        .mapContainer {
+            min-width: 40vmin;
+        }
+    }
+
+    .mapContainer {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid white;
+        margin: 3vmin;
+        font-size: .6em;
+        flex-direction: column;
+        padding: 20px;
+        background-color: rgba(0, 79, 132, 0.2);
+        flex-basis: 1;
+        max-width: 60vmin;
+        min-height: 35vmin;
+        cursor: pointer;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .buttonContainer {
+            min-width: 50vmin;
+        }
+    }
+
+    .buttonContainer {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid white;
+        margin: 3vmin;
+        font-size: 1em;
+        flex-direction: column;
+        padding: 20px;
+        background-color: rgba(0, 79, 132, 0.2);
+        cursor: pointer;
+        font-weight: bold;
+        min-height: 10vmin;
+    }
+
+    .mapImage {
+        width: 25vmin;
+        margin-bottom: 30px;
+    }
+
 </style>
 
 <script>
@@ -45,17 +173,26 @@ export default {
 
     data () {
         return {
-            mapIndex: Math.floor(Math.random() * maps.length)
+            maps: maps
         }
     },
 
-    created () {
-        this.$router.push({
-            name: 'Play',
-            params: {
-                mapIndex: this.mapIndex
-            }
-        })
+    methods: {
+        playMap (map) {
+            this.$router.push({
+                name: 'Play',
+                params: {
+                    mapIndex: map
+                }
+            })
+        },
+
+        showHighscores () {
+            this.$router.push({
+                name: 'Highscores',
+                path: '/highscores'
+            })
+        }
     }
 }
 </script>
