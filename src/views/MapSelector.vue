@@ -24,10 +24,18 @@
             </div>
         </div>
         <div :class="$style.mapsContainer">
-            <div :class="$style.buttonContainer">How to play</div>
             <div
                 :class="$style.buttonContainer"
-                @click="showHighscores">Highscores</div>
+                @click="showHowto"
+            >
+                How to play
+            </div>
+            <div
+                :class="$style.buttonContainer"
+                @click="showHighscores"
+            >
+                Highscores
+            </div>
         </div>
     </div>
 </template>
@@ -190,6 +198,12 @@ export default {
         showHighscores () {
             this.$router.push({
                 name: 'Highscores'
+            })
+        },
+
+        showHowto () {
+            this.$router.push({
+                name: 'Howto'
             })
         }
     }
