@@ -906,6 +906,10 @@ export default {
                 return
             }
 
+            if (this.bugsLeft > 0) {
+                this.money += 5 * (this.wave + 1)
+            }
+
             // select random bug
             let bugKeys = Object.keys(BugConfig)
             let randomBugKey = bugKeys[Math.floor(Math.random() * bugKeys.length)]
