@@ -114,7 +114,7 @@
         font-family: Arial, sans-serif;
         background: url(../assets/svg/Background.svg) center center no-repeat fixed;
         background-size: cover;
-        font-size: 28px;
+        font-size: 2vmax;
 
         * {
             box-sizing: border-box;

@@ -1,5 +1,5 @@
 <template>
-    <div :class="$style.mainClasses">
+    <div :class="mainClasses">
         <div :class="$style.tower">
             <div
                 :class="$style.image"
@@ -69,11 +69,17 @@
     .container {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container.mobile.portrait {
+        flex-direction: row;
     }
 
     .tower {
         margin: 0 auto;
-        width: 30%;
+        width: 15vmax;
         border: 2px solid #333;
         background: #AAA;
         padding: 1vmin;
@@ -89,7 +95,7 @@
 
     .table {
         margin: 0 auto;
-        font-size: 0.5em;
+        font-size: 0.8em;
 
         td {
             padding: 0.2em 0.5em;
