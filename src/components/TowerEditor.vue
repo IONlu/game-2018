@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="$style.mainClasses">
         <div :class="$style.tower">
             <div
                 :class="$style.image"
@@ -66,6 +66,11 @@
 </template>
 
 <style module>
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
     .tower {
         margin: 0 auto;
         width: 30%;
@@ -115,6 +120,14 @@ export default {
     },
 
     computed: {
+        mainClasses () {
+            return {
+                [this.$style.container]: true,
+                [this.$style.mobile]: this.game.isMobile,
+                [this.$style.portrait]: this.game.isPortrait
+            }
+        },
+
         imageStyle () {
             return {
                 backgroundImage: `url(${this.tower.data.image})`

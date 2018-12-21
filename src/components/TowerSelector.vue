@@ -1,5 +1,5 @@
 <template>
-    <div :class="$style.container">
+    <div :class="mainClasses">
         <div
             v-for="(data, tower) in towers"
             :key="tower"
@@ -26,6 +26,10 @@
         margin: 0.5em;
     }
 
+    .container.mobile.portrait {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
     .tower {
         border: 2px solid #333;
         background: #AAA;
@@ -44,7 +48,7 @@
     .price {
         position: absolute;
         bottom: 0.5em;
-        right: 0.5em;;
+        right: 0.5em;
         font-size: 0.5em;
     }
 </style>
@@ -67,6 +71,14 @@ export default {
     },
 
     computed: {
+        mainClasses () {
+            return {
+                [this.$style.container]: true,
+                [this.$style.mobile]: this.game.isMobile,
+                [this.$style.portrait]: this.game.isPortrait
+            }
+        },
+
         towers () {
             return TowerConfig
         }
