@@ -1,6 +1,12 @@
 <template>
     <div :class="$style.highscores">
         <div :class="$style.logoContainer">
+            <div
+                :class="$style.backButton"
+                @click="back"
+            >
+                &#8249; Back
+            </div>
             <img
                 :class="$style.logo"
                 src="../assets/svg/logo.svg">
@@ -70,9 +76,16 @@
 
     .logoContainer {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: flex-start;
         padding-right: 5vmin;
+        padding-left: 5vmin;
         padding-top: 5vmin;
+    }
+
+    .backButton {
+        cursor: pointer;
+        padding: 20px;
     }
 
     .logo {
@@ -193,6 +206,12 @@ export default {
         getHighscoresByMap (map) {
             return this.highscores.filter((score) => {
                 return score.map === map
+            })
+        },
+
+        back () {
+            this.$router.push({
+                path: '/'
             })
         }
     }
