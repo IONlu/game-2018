@@ -11,6 +11,21 @@
                     :class="$style.gameOver"
                 >
                     <div
+                        :class="$style.submitHighscoreContainer"
+                    >
+                        <input
+                            v-model="playerName"
+                            type="text"
+                            placeholder="Enter your name"
+                            maxlength="10"
+                        >
+                        <button
+                            :class="$style.submitHighscoreButton"
+                            @click="submitHighscore">
+                            Submit Highscore
+                        </button>
+                    </div>
+                    <div
                         :class="$style.newGameButtonContainer"
                     >
                         <button
@@ -254,13 +269,39 @@
     }
 
     .gameOver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         position: absolute;
         width: 100vw;
         height: 100vh;
-        background: #000000CC url(../assets/svg/gameover.svg) center center no-repeat;
+        background: #000000CC url(../assets/svg/gameover.svg) no-repeat;
+        background-position: center 15vmin;
         background-size: 80vmin;
         z-index: 999999;
         transition: all 0.5s;
+    }
+
+    .submitHighscoreContainer {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+
+        input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #FFFFFFCC;
+            color: white;
+            font-size: 1em;
+            width: 50vmin;
+            margin-bottom: 5vmin;
+        }
+    }
+
+    .submitHighscoreButton {
+        max-width: 50vmin;
+        composes: button;
     }
 
     .fade {
@@ -293,6 +334,7 @@ import TowerEditor from './TowerEditor'
 import BugConfig from '../config/bugs'
 import AssetsImage from '../assets/assets.png'
 import AssetsConfig from '../assets/assets.json'
+import axios from 'axios'
 const { AnimatedSprite } = extras
 
 export default {
@@ -337,7 +379,8 @@ export default {
             nextBugHealth: 100,
             bugHealthIncrement: 20,
             bugHealthIncrementIncrement: 7,
-            gameOver: false
+            gameOver: false,
+            playerName: ''
         }
     },
 
@@ -617,6 +660,7 @@ export default {
     },
 
     mounted () {
+        axios.defaults.baseUrl = 'http://localhost:3000'
         this.renderer = autoDetectRenderer(
             this.$refs.renderContainer.clientWidth,
             this.$refs.renderContainer.clientHeight,
@@ -1218,6 +1262,25 @@ export default {
                     TowerHelpers.getRange(this.selectedTower) * this.tileSize
                 )
                 this.towerRangeGraphics.endFill()
+            }
+        },
+
+        submitHighscore () {
+            if (this.playerName.length > 0 && this.playerName.length <= 10) {
+                return axios({
+                    method: 'post',
+                    url: '/highscores',
+                    data: {
+                        'player': this.playerName,
+                        'waveReached': this.wave,
+                        'enemiesKilled': this.allBugsKilledCounter,
+                        'map': this.$vnode.key
+                    }
+                }).then((response) => {
+                    console.log(response)
+                }).catch((error) => {
+                    console.log(error)
+                })
             }
         }
     }
