@@ -20,6 +20,7 @@
                             maxlength="10"
                         >
                         <button
+                            v-if="!submittingHighscore"
                             :class="$style.submitHighscoreButton"
                             @click="submitHighscore">
                             Submit Highscore
@@ -393,7 +394,8 @@ export default {
             bugHealthIncrementIncrement: 7,
             gameOver: false,
             playerName: '',
-            bugsKilled: 0
+            bugsKilled: 0,
+            submittingHighscore: false
         }
     },
 
@@ -1311,7 +1313,8 @@ export default {
         },
 
         submitHighscore () {
-            if (this.playerName.length > 0 && this.playerName.length <= 10) {
+            if (!this.submittingHighscore && this.playerName.length > 0 && this.playerName.length <= 10) {
+                this.submittingHighscore = true
                 window.localStorage.playerName = this.playerName
                 return axios({
                     method: 'post',
@@ -1323,9 +1326,12 @@ export default {
                         'map': this.map.name
                     }
                 }).then((response) => {
-                    console.log(response)
+                    this.$router.push({
+                        name: 'Highscores'
+                    })
                 }).catch((error) => {
                     console.log(error)
+                    this.submittingHighscore = false
                 })
             }
         }
