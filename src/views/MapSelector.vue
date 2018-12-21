@@ -18,9 +18,6 @@
                 <img
                     :class="$style.mapImage"
                     :src="map.image">
-                <div>
-                    Map {{ index }}
-                </div>
             </div>
         </div>
         <div :class="$style.mapsContainer">
