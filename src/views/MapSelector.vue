@@ -107,7 +107,7 @@
         background-color: rgba(0, 79, 132, 0.2);
         flex-basis: 1;
         max-width: 60vmin;
-        min-height: 35vmin;
+        min-height: 32vmin;
         cursor: pointer;
     }
 
