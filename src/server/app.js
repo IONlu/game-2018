@@ -1,9 +1,11 @@
 var express = require('express')
 var bodyParser = require('body-parser')
+var cors = require('cors')
 var app = express()
 
 app.use(express.static('dist'))
 app.use(bodyParser())
+app.use(cors())
 
 const MongoClient = require('mongodb').MongoClient
 
@@ -67,10 +69,14 @@ app.post('/highscores', (req, res) => {
 })
 
 app.get('/highscores', (req, res) => {
-    db.collection('highscores').find().toArray((err, results) => {
-        if (err) throw err
-        // eslint-disable-next-line no-console
-        console.log(results)
-        res.send(results)
-    })
+    db.collection('highscores')
+        .find()
+        .sort({
+            waveReached: -1
+        })
+        .toArray((err, results) => {
+            if (err) throw err
+            // eslint-disable-next-line no-console
+            res.send(results)
+        })
 })
