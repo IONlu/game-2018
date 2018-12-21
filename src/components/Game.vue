@@ -1292,7 +1292,7 @@ export default {
                     data: {
                         'player': this.playerName,
                         'waveReached': this.wave,
-                        'enemiesKilled': this.allBugsKilledCounter,
+                        'enemiesKilled': this.bugsKilled,
                         'map': this.$vnode.key
                     }
                 }).then((response) => {
