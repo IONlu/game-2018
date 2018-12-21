@@ -5,6 +5,12 @@
         <div
             :class="mainClasses"
         >
+            <transition :name="$style.fade">
+                <div
+                    v-if="gameOver"
+                    :class="$style.gameOver"
+                />
+            </transition>
             <div
                 :class="$style.topBar"
             >
@@ -219,6 +225,29 @@
     .towerEditor {
         width: 100%;
     }
+
+    .gameOver {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background: #00000099 url(../assets/svg/gameover.svg) center center no-repeat;
+        background-size: 80vmin;
+        z-index: 999999;
+        transition: all 0.5s;
+    }
+
+    .fade {
+        &:global(-enter-active),
+        &:global(-leave-acive) {
+            transition: background 0.5s;
+        }
+
+        &:global(-enter),
+        &:global(-leave-to) {
+            background-color: transparent;
+            background-size: 0;
+        }
+    }
 </style>
 
 <script>
@@ -264,7 +293,7 @@ export default {
             towers: [],
             bullets: [],
             selectedTile: null,
-            health: 100,
+            health: 30,
             bugsLeft: 0,
             wave: 0,
             screen: {
@@ -280,7 +309,8 @@ export default {
             nextWaveTimeout: 200,
             nextBugHealth: 100,
             bugHealthIncrement: 20,
-            bugHealthIncrementIncrement: 7
+            bugHealthIncrementIncrement: 7,
+            gameOver: false
         }
     },
 
@@ -478,6 +508,11 @@ export default {
             if (this.lastBugSpawned && this.allBugsKilledCounter >= this.nextWaveTimeout) {
                 this.nextWave()
             }
+        },
+
+        gameOver () {
+            this.gameOver = true
+            this.ticker.stop()
         }
     },
 
@@ -964,6 +999,9 @@ export default {
         handleBugReachesEnd (bug) {
             this.health--
             bug.removed = true
+            if (this.health === 0) {
+                this.gameOver = true
+            }
         },
 
         removeBugs () {
@@ -1137,7 +1175,7 @@ export default {
         },
 
         onVisibilityChange () {
-            if (document.hidden) {
+            if (this.gameOver || document.hidden) {
                 this.ticker.stop()
             } else {
                 this.ticker.start()
