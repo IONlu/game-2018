@@ -37,13 +37,13 @@ app.post('/highscores', (req, res) => {
                 allowedKeys.forEach((allowedKey) => {
                     switch (allowedKey) {
                         case 'player':
+                        case 'map':
                             if (typeof req.body[allowedKey] !== 'string') {
                                 check = false
                             }
                             break
                         case 'waveReached':
                         case 'enemiesKilled':
-                        case 'map':
                             if (typeof req.body[allowedKey] !== 'number') {
                                 check = false
                             }
