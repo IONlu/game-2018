@@ -49,6 +49,9 @@ const validateBody = body => {
 }
 
 app.post('/highscores', (req, res) => {
+    const sendResponse = () => {
+        res.status(200).send(req.body)
+    }
     return new Promise((resolve, reject) => {
         let reqHash = (req.header('Authorization') || '').substr(7)
         let reqBody = req.body
@@ -72,9 +75,13 @@ app.post('/highscores', (req, res) => {
                     .insertOne({ uuid }, () => resolve())
             }
         }
-    }).then(() => {
-        res.status(200).send(req.body)
     })
+        .then(() => sendResponse())
+        .catch(err => {
+            // eslint-disable-next-line no-console
+            console.error(err)
+            sendResponse()
+        })
 })
 
 app.get('/highscores', (req, res) => {
