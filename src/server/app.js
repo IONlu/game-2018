@@ -7,6 +7,9 @@ const path = require('path')
 const hash = require('hash.js')
 
 const validateHash = (str, reqHash) => {
+    if (!str || !reqHash) {
+        return false
+    }
     let UUID = reqHash.substr(-36)
     return reqHash === hash.sha1().update(UUID + str).digest('hex') + '-' + UUID
 }
@@ -53,7 +56,7 @@ app.post('/highscores', (req, res) => {
         res.status(200).send(req.body)
     }
     return new Promise((resolve, reject) => {
-        let reqHash = (req.header('Authorization') || '').substr(7)
+        let reqHash = (req.headers.authorization || '').substr(7)
         let reqBody = req.body
         if (validateHash(reqHash)) {
             let uuid = reqHash.substr(-36)
