@@ -4,36 +4,20 @@
 
 <script>
 import uuidv4 from 'uuid/v4'
+import hash from 'hash.js'
+
+const UUID = localStorage.getItem('UUID') || uuidv4()
+localStorage.setItem('UUID', UUID)
+window.addEventListener('beforeunload', () => {
+    localStorage.setItem('UUID', UUID)
+})
+const hashStr = str => {
+    return hash.sha1().update(UUID + str).digest('hex') + '-' + UUID
+}
 
 export default {
-    created () {
-        this.getUUID()
-        window.addEventListener('beforeunload', this.onBeforeUnload)
-    },
-
-    beforeDestroy () {
-        window.removeEventListener('beforeunload', this.onBeforeUnload)
-        this.saveUUID()
-    },
-
-    methods: {
-        getUUID () {
-            let UUID = localStorage.getItem('UUID')
-            if (!UUID) {
-                UUID = uuidv4()
-                localStorage.setItem('UUID', UUID)
-            }
-            this.$root.UUID = UUID
-            return UUID
-        },
-
-        saveUUID () {
-            localStorage.setItem('UUID', this.$root.UUID)
-        },
-
-        onBeforeUnload () {
-            this.saveUUID()
-        }
+    provide: {
+        hash: hashStr
     }
 }
 </script>
