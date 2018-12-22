@@ -51,6 +51,20 @@ const validateBody = body => {
     }
 }
 
+const isNotBlacklisted = uuid => {
+    return new Promise((resolve, reject) => {
+        db.collection('blacklist').findOne({ uuid }, (err, result) => {
+            if (err) {
+                reject(err)
+            } else if (result) {
+                reject(new Error('blacklisted'))
+            } else {
+                resolve()
+            }
+        })
+    })
+}
+
 app.post('/highscores', (req, res) => {
     const sendResponse = () => {
         res.status(200).send(req.body)
@@ -60,23 +74,22 @@ app.post('/highscores', (req, res) => {
         let reqBody = req.body
         if (validateHash(`${reqBody.player}::${reqBody.waveReached}::${reqBody.enemiesKilled}::${reqBody.map}`, reqHash)) {
             let uuid = reqHash.substr(-36)
-            // is blacklisted
-            if (db.collection('blacklist').findOne({ uuid })) {
-                return reject(new Error('blacklisted'))
-            }
-
-            if (validateBody(reqBody)) {
-                let data = {
-                    ...reqBody,
-                    uuid,
-                    version: packageData.version
-                }
-                db.collection('highscores')
-                    .insertOne(data, err => err ? reject(err) : resolve())
-            } else {
-                db.collection('blacklist')
-                    .insertOne({ uuid }, () => resolve())
-            }
+            isNotBlacklisted(uuid)
+                .then(() => {
+                    if (validateBody(reqBody)) {
+                        let data = {
+                            ...reqBody,
+                            uuid,
+                            version: packageData.version
+                        }
+                        db.collection('highscores')
+                            .insertOne(data, err => err ? reject(err) : resolve())
+                    } else {
+                        db.collection('blacklist')
+                            .insertOne({ uuid }, () => resolve())
+                    }
+                })
+                .catch(err => reject(err))
         } else {
             reject('Invalid hash')
         }
