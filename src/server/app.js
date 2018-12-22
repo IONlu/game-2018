@@ -49,6 +49,7 @@ const validateBody = body => {
             return false
         }
     }
+    return true
 }
 
 const isNotBlacklisted = uuid => {
@@ -86,7 +87,7 @@ app.post('/highscores', (req, res) => {
                             .insertOne(data, err => err ? reject(err) : resolve())
                     } else {
                         db.collection('blacklist')
-                            .insertOne({ uuid }, () => resolve())
+                            .insertOne({ uuid }, () => reject(new Error('blacklisted')))
                     }
                 })
                 .catch(err => reject(err))
