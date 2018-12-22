@@ -391,7 +391,7 @@ export default {
             nextWaveTimeout: 200,
             nextBugHealth: 100,
             bugHealthIncrement: 20,
-            bugHealthIncrementIncrement: 7,
+            bugHealthIncrementIncrement: 10,
             gameOver: false,
             playerName: '',
             bugsKilled: 0,
