@@ -58,7 +58,7 @@ app.post('/highscores', (req, res) => {
     return new Promise((resolve, reject) => {
         let reqHash = (req.headers.authorization || '').substr(7)
         let reqBody = req.body
-        if (validateHash(reqHash)) {
+        if (validateHash(`${reqBody.player}::${reqBody.waveReached}::${reqBody.enemiesKilled}::${reqBody.map}`, reqHash)) {
             let uuid = reqHash.substr(-36)
             // is blacklisted
             if (db.collection('blacklist').findOne({ uuid })) {
@@ -77,6 +77,8 @@ app.post('/highscores', (req, res) => {
                 db.collection('blacklist')
                     .insertOne({ uuid }, () => resolve())
             }
+        } else {
+            reject('Invalid hash')
         }
     })
         .then(() => sendResponse())

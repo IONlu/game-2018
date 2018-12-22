@@ -1317,15 +1317,15 @@ export default {
             if (!this.submittingHighscore && this.playerName.length > 0 && this.playerName.length <= 10) {
                 this.submittingHighscore = true
                 window.localStorage.playerName = this.playerName
-                let token = this.hash(this.playerName, this.wave, this.bugsKilled, this.map.name)
+                let token = this.hash(`${this.playerName}::${this.wave}::${this.bugsKilled}::${this.map.name}`)
                 return axios({
                     method: 'post',
                     url: '/highscores',
                     data: {
-                        'player': this.playerName,
-                        'waveReached': this.wave,
-                        'enemiesKilled': this.bugsKilled,
-                        'map': this.map.name
+                        player: this.playerName,
+                        waveReached: this.wave,
+                        enemiesKilled: this.bugsKilled,
+                        map: this.map.name
                     },
                     headers: {
                         Authorization: `Bearer ${token}`
