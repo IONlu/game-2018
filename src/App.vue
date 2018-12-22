@@ -11,7 +11,7 @@ export default {
         window.addEventListener('beforeunload', this.onBeforeUnload)
     },
 
-    beforeDestroy() {
+    beforeDestroy () {
         window.removeEventListener('beforeunload', this.onBeforeUnload)
         this.saveUUID()
     },
