@@ -33,7 +33,7 @@
                                         {{ map.name }}
                                     </td>
                                 </tr>
-                                <tr><td><hr></td></tr>
+                                <tr><td colspan="2"><hr></td></tr>
                             </thead>
                             <tbody>
                                 <tr
