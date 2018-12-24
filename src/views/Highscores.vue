@@ -33,6 +33,7 @@
                                         {{ map.name }}
                                     </td>
                                 </tr>
+                                <tr><td><hr></td></tr>
                             </thead>
                             <tbody>
                                 <tr
@@ -210,7 +211,7 @@ export default {
 
     data () {
         return {
-            highscores: null,
+            highscores: [],
             maps: maps
         }
     },
