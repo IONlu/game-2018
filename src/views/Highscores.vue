@@ -11,42 +11,45 @@
                 :class="$style.logo"
                 src="../assets/svg/logo.svg">
         </div>
-        <div :class="$style.header">
-            <h3>Highscores</h3>
-        </div>
-        <div
-            v-if="highscores"
-            :class="$style.highscoresContainer">
-            <div
-                v-for="(map, index) in maps"
-                :key="index"
-                :class="$style.mapHighscore"
-            >
-                <div :class="$style.highscoreHeader">
-                    <img
-                        :class="$style.mapImage"
-                        :src="map.image">
-                    <h4>{{ map.name }}</h4>
-                </div>
-                <div
-                    v-for="(score, index) in getHighscoresByMap(map.name)"
-                    :key="score['_id']"
-                    :class="$style.entry"
-                >
-                    <div :class="$style.playerName">
-                        {{ index + 1 }}. {{ score.player }}
-                    </div>
-                    <div :class="$style.score">
-                        {{ score.waveReached }}
-                    </div>
-                </div>
-                <div
-                    v-if="getHighscoresByMap(map.name).length === 0"
-                    :class="$style.entry">
-                    No highscores
-                </div>
-            </div>
-        </div>
+        <table :class="$style.highscoreTable">
+            <thead>
+                <tr>
+                    <td colspan="4"><h3>Highscores</h3></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td
+                        v-for="(map, index) in maps"
+                        :key="index"
+                        @click="playMap(map.name)">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td colspan="2">
+                                        <img
+                                            :class="$style.mapImage"
+                                            :src="map.image">
+                                        {{ map.name }}
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(score, index) in getHighscoresByMap(map.name)"
+                                    :key="score[__id]">
+                                    <td>{{ index + 1 }}. {{ score.player }}</td>
+                                    <td>{{ score.waveReached }}</td>
+                                </tr>
+                                <tr v-if="getHighscoresByMap(map.name).length === 0">
+                                    <td colspan="2">No highscores</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -78,6 +81,97 @@
         }
     }
 
+    @media all and (min-width:1000px){
+        .highscoreTable {
+            margin-top: 50px;
+            width: 100%;
+            font-size: 3vmin;
+            border-spacing: 50px;
+
+            thead {
+                tr {
+                    text-align: center;
+                }
+            }
+
+            tbody {
+                tr {
+                    td {
+                        border: 1px solid white;
+                        text-align: center;
+                        cursor: pointer;
+                        font-size: 2vmin;
+
+                        table {
+                            width: 100%;
+                            thead {
+                                tr {
+                                    td {
+                                        border: none;
+                                    }
+                                }
+                            }
+                            tbody {
+                                tr {
+                                    td {
+                                        border: 0px;
+                                        text-align: center;
+                                    }
+                                    td:first-child {
+                                        width: 60%;
+                                    }
+                                    td:last-child {
+                                        width: 40%;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media all and (max-width:1000px){
+        .highscoreTable {
+            width:100%;
+            border-spacing: 20px;
+
+            thead {
+                tr {
+                    text-align: center;
+                }
+            }
+
+            tbody {
+                tr {
+                    td {
+                        border: 1px solid white;
+                        display:block;
+                        width:100%;
+                        margin-bottom: 30px;
+                        cursor: pointer;
+                        table {
+                            width: 100%;
+                            thead {
+                                td {
+                                    border: none;
+                                }
+                            }
+                            tr {
+                                td {
+                                    display: table-cell;
+                                    border: 0px;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
     .header {
         display: flex;
         justify-content: center;
@@ -101,70 +195,8 @@
         width: 30vmin;
     }
 
-    .highscoresContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-start;
-        flex-wrap: wrap;
-    }
-
-    @media screen and (max-width: 1000px) {
-        .mapHighscore {
-            min-width: 50vmin;
-        }
-    }
-
-    @media screen and (min-width: 1000px) {
-        .mapHighscore {
-            min-width: 40vmin;
-        }
-    }
-
-    .mapHighscore {
-        display: flex;
-        flex: 1;
-        justify-content: flex-start;
-        border: 1px solid white;
-        margin: 3vmin;
-        font-size: .6em;
-        flex-direction: column;
-        padding: 20px;
-        background-color: rgba(0, 79, 132, 0.2);
-        flex-basis: 1;
-        max-width: 60vmin;
-        min-height: 20vmin;
-    }
-
-    .highscoreHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        h4 {
-            margin: 0;
-        }
-        padding-bottom: 30px;
-        border-bottom: 1px solid white;
-        margin-bottom: 30px;
-    }
-
     .mapImage {
         height: 5vmin;
-    }
-
-    .entry {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .playerName {
-        /* text-align: center; */
-        margin: 10px;
-    }
-
-    .score {
-        /* text-align: center; */
-        margin: 10px;
     }
 
 </style>
