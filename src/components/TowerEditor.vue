@@ -8,7 +8,15 @@
         </div>
         <table :class="$style.table">
             <tr>
-                <td>{{ damageText }}</td>
+                <td>
+                    {{ damageText }}
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('damage')"
+                    >
+                        Upgrade
+                    </button>
+                </td>
                 <td>
                     {{ damageLevel }}
                     <span :class="$style.small">({{ damage }} <fa-icon icon="angle-double-right" /> {{ nextDamage }})</span>
@@ -16,17 +24,17 @@
                 <td>
                     <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('damage') }}
                 </td>
-                <td>
-                    <button
-                        :class="game.$style.button"
-                        @click="upgrade('damage')"
-                    >
-                        <fa-icon icon="angle-double-up" /> Upgrade
-                    </button>
-                </td>
             </tr>
             <tr>
-                <td>Speed</td>
+                <td>
+                    Speed
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('speed')"
+                    >
+                        Upgrade
+                    </button>
+                </td>
                 <td>
                     {{ speedLevel }}
                     <span :class="$style.small">({{ speed }}s <fa-icon icon="angle-double-right" /> {{ nextSpeed }}s)</span>
@@ -34,31 +42,23 @@
                 <td>
                     <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('speed') }}
                 </td>
-                <td>
-                    <button
-                        :class="game.$style.button"
-                        @click="upgrade('speed')"
-                    >
-                        <fa-icon icon="angle-double-up" /> Upgrade
-                    </button>
-                </td>
             </tr>
             <tr>
-                <td>Range</td>
+                <td>
+                    Range
+                    <button
+                        :class="game.$style.button"
+                        @click="upgrade('range')"
+                    >
+                        Upgrade
+                    </button>
+                </td>
                 <td>
                     {{ rangeLevel }}
                     <span :class="$style.small">({{ range }} <fa-icon icon="angle-double-right" /> {{ nextRange }})</span>
                 </td>
                 <td>
                     <fa-icon icon="dollar-sign" /> {{ getUpgradePrice('range') }}
-                </td>
-                <td>
-                    <button
-                        :class="game.$style.button"
-                        @click="upgrade('range')"
-                    >
-                        <fa-icon icon="angle-double-up" /> Upgrade
-                    </button>
                 </td>
             </tr>
         </table>
@@ -100,6 +100,10 @@
         td {
             padding: 0.2em 0.5em;
         }
+
+        button {
+            font-size: 2vmin;
+        }
     }
 
     .small {
@@ -107,6 +111,7 @@
         opacity: 0.5;
         font-size: 0.8em;
     }
+
 </style>
 
 <script>
