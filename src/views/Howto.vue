@@ -3,6 +3,7 @@
         <img
             :class="$style.howto"
             src="../assets/svg/howto.svg"
+            @click="back"
         >
     </div>
 </template>
@@ -22,6 +23,14 @@
 
 <script>
 export default {
-    name: 'Howto'
+    name: 'Howto',
+
+    methods: {
+        back () {
+            this.$router.push({
+                path: '/'
+            })
+        }
+    }
 }
 </script>
