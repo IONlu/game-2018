@@ -52,7 +52,42 @@
         overflow: auto;
     }
 
-    @media all and (max-width:1000px){
+    .mapTable {
+        margin-top: 50px;
+        width: 100%;
+        font-size: 4vmin;
+        border-spacing: 50px;
+
+        thead {
+            tr {
+                text-align: center;
+            }
+        }
+
+        tbody {
+            tr {
+                td {
+                    text-align: center;
+                    border: 1px solid white;
+                    cursor: pointer;
+                    img {
+                        width: 18vmin;
+                    }
+                }
+            }
+        }
+
+        .buttons {
+            height: 10vmin;
+
+            td {
+                text-align: center;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    @media all and (max-width:1280px){
         .mapTable{
             width:100%;
             border-spacing: 50px;
@@ -62,6 +97,17 @@
                 width:100%;
                 margin-bottom: 30px;
                 cursor: pointer;
+
+            }
+
+            tbody {
+                tr {
+                    td {
+                        img {
+                            width: 50vmin;
+                        }
+                    }
+                }
             }
 
             tr{
@@ -81,38 +127,6 @@
                         align-items: center;
                     }
                 }
-            }
-        }
-    }
-
-    .mapTable {
-        margin-top: 50px;
-        width: 100%;
-        font-size: 4vmin;
-        border-spacing: 50px;
-
-        thead {
-            tr {
-                text-align: center;
-            }
-        }
-
-        tbody {
-            tr {
-                td {
-                    text-align: center;
-                    border: 1px solid white;
-                    cursor: pointer;
-                }
-            }
-        }
-
-        .buttons {
-            height: 10vmin;
-
-            td {
-                text-align: center;
-                vertical-align: middle;
             }
         }
     }
