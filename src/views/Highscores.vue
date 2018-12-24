@@ -81,7 +81,7 @@
         }
     }
 
-    @media all and (min-width:1000px){
+    @media all and (min-width:1280px){
         .highscoreTable {
             margin-top: 50px;
             width: 100%;
@@ -132,7 +132,7 @@
         }
     }
 
-    @media all and (max-width:1000px){
+    @media all and (max-width:1280px){
         .highscoreTable {
             width:100%;
             border-spacing: 20px;
@@ -246,7 +246,7 @@ export default {
         getHighscoresByMap (map) {
             return this.highscores.filter((score) => {
                 return score.map === map
-            })
+            }).slice(0, 10)
         },
 
         back () {
