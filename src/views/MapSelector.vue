@@ -5,38 +5,32 @@
                 :class="$style.logo"
                 src="../assets/svg/logo.svg">
         </div>
-        <div :class="$style.header">
-            <h3>Select to play</h3>
-        </div>
-        <div :class="$style.mapsContainer">
-            <div
-                v-for="(map, index) in maps"
-                :key="index"
-                :class="$style.mapContainer"
-                @click="playMap(map.name)"
-            >
-                <img
-                    :class="$style.mapImage"
-                    :src="map.image">
-                <div>
-                    {{ map.name }}
-                </div>
-            </div>
-        </div>
-        <div :class="$style.mapsContainer">
-            <div
-                :class="$style.buttonContainer"
-                @click="showHowto"
-            >
-                How to play
-            </div>
-            <div
-                :class="$style.buttonContainer"
-                @click="showHighscores"
-            >
-                Highscores
-            </div>
-        </div>
+        <table :class="$style.mapTable">
+            <thead>
+                <tr>
+                    <td colspan="4"><h3>Select to play</h3></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td
+                        v-for="(map, index) in maps"
+                        :key="index"
+                        @click="playMap(map.name)">
+                        <img
+                            :class="$style.mapImage"
+                            :src="map.image">
+                        <div>
+                            {{ map.name }}
+                        </div>
+                    </td>
+                </tr>
+                <tr :class="$style.buttons">
+                    <td colspan="2"><div>How to play</div></td>
+                    <td colspan="2"><div>Highscores</div></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -48,6 +42,72 @@
         width: 100vw;
         height: 100vh;
         overflow: auto;
+    }
+
+    @media all and (max-width:1000px){
+        table{
+            width:100%;
+            border-spacing: 50px;
+        }
+
+        td{
+            display:block;
+            width:100%;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        tr{
+            display:block;
+            margin-bottom:30px;
+        }
+
+        .buttons {
+            td {
+                text-align: center;
+                height: 10vmin;
+                div {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+        }
+    }
+
+    .mapTable {
+        margin-top: 50px;
+        width: 100%;
+        font-size: 4vmin;
+        border-spacing: 50px;
+
+        thead {
+            tr {
+                text-align: center;
+            }
+        }
+
+        tbody {
+            tr {
+                td {
+                    min-width: 200px;
+                    text-align: center;
+                    border: 1px solid white;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .buttons {
+            height: 10vmin;
+
+            td {
+                text-align: center;
+                vertical-align: middle;
+            }
+        }
     }
 
     .mapSelector {
@@ -84,70 +144,6 @@
 
     .logo {
         width: 30vmin;
-    }
-
-    .mapsContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: stretch;
-        flex-wrap: wrap;
-    }
-
-    @media screen and (max-width: 1000px) {
-        .mapContainer {
-            min-width: 50vmin;
-        }
-    }
-
-    @media screen and (min-width: 1000px) {
-        .mapContainer {
-            min-width: 40vmin;
-        }
-    }
-
-    .mapContainer {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        border: 1px solid white;
-        margin: 3vmin;
-        font-size: .6em;
-        flex-direction: column;
-        padding: 20px;
-        background-color: rgba(0, 79, 132, 0.2);
-        flex-basis: 1;
-        max-width: 60vmin;
-        min-height: 35vmin;
-        cursor: pointer;
-    }
-
-    @media screen and (max-width: 1000px) {
-        .buttonContainer {
-            min-width: 50vmin;
-        }
-    }
-
-    .buttonContainer {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid white;
-        margin: 3vmin;
-        font-size: 1em;
-        flex-direction: column;
-        padding: 20px;
-        background-color: rgba(0, 79, 132, 0.2);
-        cursor: pointer;
-        font-weight: bold;
-        min-height: 10vmin;
-    }
-
-    .mapImage {
-        width: 25vmin;
-        margin-bottom: 30px;
     }
 
 </style>
