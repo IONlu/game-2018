@@ -26,8 +26,16 @@
                     </td>
                 </tr>
                 <tr :class="$style.buttons">
-                    <td colspan="2"><div>How to play</div></td>
-                    <td colspan="2"><div>Highscores</div></td>
+                    <td
+                        colspan="2"
+                        @click="showHowto">
+                        <div>How to play</div>
+                    </td>
+                    <td
+                        colspan="2"
+                        @click="showHighscores">
+                        <div>Highscores</div>
+                    </td>
                 </tr>
             </tbody>
         </table>
