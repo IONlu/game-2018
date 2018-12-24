@@ -53,33 +53,33 @@
     }
 
     @media all and (max-width:1000px){
-        table{
+        .mapTable{
             width:100%;
             border-spacing: 50px;
-        }
 
-        td{
-            display:block;
-            width:100%;
-            margin-bottom: 30px;
-            cursor: pointer;
-        }
+            td{
+                display:block;
+                width:100%;
+                margin-bottom: 30px;
+                cursor: pointer;
+            }
 
-        tr{
-            display:block;
-            margin-bottom:30px;
-        }
+            tr{
+                display:block;
+                margin-bottom:30px;
+            }
 
-        .buttons {
-            td {
-                text-align: center;
-                height: 10vmin;
-                div {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+            .buttons {
+                td {
+                    text-align: center;
+                    height: 10vmin;
+                    div {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
                 }
             }
         }
@@ -100,7 +100,6 @@
         tbody {
             tr {
                 td {
-                    min-width: 200px;
                     text-align: center;
                     border: 1px solid white;
                     cursor: pointer;
